@@ -1,0 +1,95 @@
+include Java
+
+class SyntaxNodeModel < javax.swing.table.AbstractTableModel
+  
+  attr_reader :line_start, :column_start, :line_end, :column_end
+  
+  def initialize(unit)  
+    super()
+    @info_list = ["Type", "Content", "Start", "End"]
+    @data = Hash.new
+    @unit = unit
+    
+    if @unit.nil?
+      @valid = false
+    else
+      @valid = true
+      @data["Type"] = @unit.type_label
+      @data["Content"] = @unit.content
+      
+      if @unit.respond_to?("language_instance")
+        # for language unit
+        @line_start = @unit.token ? @unit.token.line_number : 1
+        @column_start = @unit.token ? @unit.token.column_start : 0
+      else
+        # for tokens
+        @line_start = @unit.line_start
+        @column_start = @unit.column_start
+      end
+        
+      node = @unit
+      while !node.kind_of?(Token) do
+        break unless (node.expressions && node.expressions.last)
+        node = node.expressions.last
+      end
+      
+      @line_end = node.line_number
+      @column_end = node.column_end
+      
+      @data["Start"] = "#{@line_start} : #{@column_start + 1}"
+      @data["End"] =  "#{@line_end} : #{@column_end + 1}"
+    end
+    
+  end
+  
+  def addTableModelListener(l)
+    return    
+  end
+  
+  def valid?
+    @valid
+  end
+  
+#  def getColumnClass(index)
+#    return getValueAt(0, index).getClass()
+#  end
+  
+  def getColumnCount
+    2
+  end
+  
+  def getColumnName(index)
+    case index
+      when 0
+        "Property"
+      when 1
+        "Value"
+    end
+  end
+  
+  def getRowCount
+    @info_list.length
+  end
+  
+  def getValueAt(row, col)
+    case col
+      when 0
+        @info_list[row]
+      when 1
+        @data[@info_list[row]]
+    end
+  end
+  
+  def isCellEditable(row, col)
+    false
+  end
+  
+  def removeTableModelListener(l)
+    
+  end
+  
+  def setValueAt(value, row, col)
+    
+  end
+  
+end

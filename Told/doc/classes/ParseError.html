@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: ParseError</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />ParseError</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/parser/parse_error_rb.html">lib-ruby/parser/parse_error.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+RuntimeError
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+The <a href="ParseError.html">ParseError</a> class provides error
+information at the parse stage.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000100">location</a></li>
+  <li><a href="#M000095">mismatched</a></li>
+  <li><a href="#M000099">new</a></li>
+  <li><a href="#M000098">no_more_tokens</a></li>
+  <li><a href="#M000097">remaining_token</a></li>
+  <li><a href="#M000101">to_s</a></li>
+  <li><a href="#M000096">unknown_type</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>description</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>token</td>
+    <td class='attr-desc'></td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000095"></a><b>mismatched</b>(expecting, found)
+  </div>
+  <div class="description">
+  <p>
+Error message when the <tt>expecting</tt> token is not found
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000095_source')" id="l_M000095_source">show source</a> ]</p>
+  <div id="M000095_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 7</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">mismatched</span>(<span class="ruby-identifier">expecting</span>, <span class="ruby-identifier">found</span>)
+    <span class="ruby-node">&quot;#{expecting.to_s} expected, token &lt;#{found}&gt; found instead&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000099"></a><b>new</b>(token, description)
+  </div>
+  <div class="description">
+  <p>
+Initialize a <a href="ParseError.html">ParseError</a> object
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000099_source')" id="l_M000099_source">show source</a> ]</p>
+  <div id="M000099_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 27</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">token</span>, <span class="ruby-identifier">description</span>)
+    <span class="ruby-ivar">@token</span> = <span class="ruby-identifier">token</span>
+    <span class="ruby-ivar">@description</span> = <span class="ruby-identifier">description</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000098"></a><b>no_more_tokens</b>(expecting)
+  </div>
+  <div class="description">
+  <p>
+Error message when the parsing is not ended, but there are not more tokens
+left
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000098_source')" id="l_M000098_source">show source</a> ]</p>
+  <div id="M000098_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 22</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">no_more_tokens</span>(<span class="ruby-identifier">expecting</span>)
+    <span class="ruby-node">&quot;[#{expecting.value_label}] expected, but there are no more tokens&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000097"></a><b>remaining_token</b>()
+  </div>
+  <div class="description">
+  <p>
+Error message when the parsing is ended with remaining tokens left
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000097_source')" id="l_M000097_source">show source</a> ]</p>
+  <div id="M000097_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 17</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">remaining_token</span>
+    <span class="ruby-value str">&quot;Should have reached the end of Program, but there are tokens left&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000096"></a><b>unknown_type</b>(expecting)
+  </div>
+  <div class="description">
+  <p>
+Error message when <tt>expecting</tt> is not a valid subclass of <a
+href="LanguageUnit.html">LanguageUnit</a>.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000096_source')" id="l_M000096_source">show source</a> ]</p>
+  <div id="M000096_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 12</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">unknown_type</span>(<span class="ruby-identifier">expecting</span>)
+    <span class="ruby-node">&quot;#{expecting.to_s} is an unknown type&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000100"></a><b>location</b>()
+  </div>
+  <div class="description">
+  <p>
+Location for this error
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000100_source')" id="l_M000100_source">show source</a> ]</p>
+  <div id="M000100_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 33</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">location</span>
+    <span class="ruby-value str">&quot;Line &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-ivar">@token</span>.<span class="ruby-identifier">line_number</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000101"></a><b>to_s</b>()
+  </div>
+  <div class="description">
+  <p>
+The detailed information of this error
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000101_source')" id="l_M000101_source">show source</a> ]</p>
+  <div id="M000101_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/parse_error.rb, line 38</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_s</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@token</span>
+      <span class="ruby-node">&quot;Parse Error at #{location}\n&gt;&gt; #{description}&quot;</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-node">&quot;Parse Error:\n&gt;&gt; #{description}&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

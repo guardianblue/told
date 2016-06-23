@@ -1,0 +1,166 @@
+require 'grammar/grammar_element.rb'
+require 'grammar/grammar_error.rb'
+require 'grammar/grammar_group.rb'
+require 'grammar/grammar_literal.rb'
+require 'grammar/grammar_lookup.rb'
+require 'grammar/grammar_regexp.rb'
+
+class GrammarSymbol < GrammarElement
+  
+  attr_reader :symbol       # the symbol (i.e. LHS) of this grammar rule
+  attr_reader :production   # the production (i.e. RHS) of this grammar rule
+  attr_reader :expressions  # parsed symbols in array form
+  attr_reader :source       # the raw form of the grammar rule
+  
+  PATTERN_RULE = /([a-zA-Z][a-zA-Z_0-9]*)[ \t]*=[ \t]*(.+)/
+  PATTERN_SEPARATION = /\|/
+  PATTERN_KLEENE = /\*/
+  PATTERN_OPTIONAL = /\?/
+  PATTERN_LITERAL = /"(?:[^"\\]*(?:\\.[^"\\]*)*)"/
+  PATTERN_SYMBOL = /[a-zA-Z][a-zA-Z_0-9]*/
+  PATTERN_REGEXP = /\/.*\//
+  
+  def empty?
+    @empty
+  end
+  
+  # Transform grammar symbol definition into logical objects
+  def initialize(source)
+    super()
+    @source = source
+    @expressions = []
+    @empty = true
+    
+    # Match the definition string against the pattern
+    match = PATTERN_RULE.match(source)
+    if match
+      @empty = false
+      @symbol = match[1]
+      @production = match[2]
+      
+      rules = (@production.split ? @production.split : [].push(@production))
+      rules.push(";") # terminating symbol
+      
+      last_symbol = nil
+      add_to_group = false
+            
+      rules.each do |r|
+        
+        if PATTERN_SEPARATION.match(r)
+          #--- handle separation symbol
+          
+          # throw exception if last_symbol is nil
+          unless last_symbol
+            raise GrammarError, GrammarError.invalid_separation
+          end
+          
+          if last_symbol.kind_of? GrammarGroup
+            # symbol group already built, do nothing
+          else
+            # build a new symbol group
+            group = GrammarGroup.new
+            group.add(last_symbol)
+            last_symbol = group
+          end
+          add_to_group = true
+          
+        elsif PATTERN_KLEENE.match(r)
+          #--- handle kleene expansion symbol
+          
+          unless last_symbol
+            raise GrammarError, GrammarError.invalid_kleene
+          end
+          last_symbol.modifier = :kleene
+          @expressions.push(last_symbol) if last_symbol
+          last_symbol = nil
+          
+        elsif PATTERN_OPTIONAL.match(r)
+          #--- handle optional symbol
+          
+          unless last_symbol
+            raise GrammarError, GrammarError.invalid_optional
+          end
+          last_symbol.modifier = :optional
+          @expressions.push(last_symbol) if last_symbol
+          last_symbol = nil
+          
+        else
+          #---  handle actual elements
+ 
+          if PATTERN_LITERAL.match(r)
+            this_symbol = GrammarLiteral.new(r)
+          elsif PATTERN_REGEXP.match(r)
+            this_symbol = GrammarRegexp.new(r)
+          elsif PATTERN_SYMBOL.match(r)
+            # the name of the symbol is stored into a GrammarLookup object for later reference
+            this_symbol = GrammarLookup.new(r)
+          end
+          
+          if add_to_group
+            # if last symbol is a separation sign, add this symbol to current group
+            last_symbol.add(this_symbol)
+            add_to_group = false
+          else
+            @expressions.push(last_symbol) if last_symbol
+            last_symbol = this_symbol
+          end
+        end
+      end # END of different matching type
+     
+    elsif source.strip.length > 0
+      # non-matching and non-empty
+      
+      raise GrammarError, GrammarError.invalid_grammar
+      
+    end # END of pattern matching
+    
+  end
+  
+  # return the string to use as the class name for this grammar rule
+  def class_name
+    camelize(symbol)
+  end
+  
+  # return the file name for the class file 
+  def file_name
+    symbol + ".rb"
+  end
+  
+  def multi_unit?
+    expressions.length == 1 && expressions.first.kind_of?(GrammarGroup)
+  end
+  
+  def init_expectation?
+    !(expressions.length == 1 && expressions.first.kind_of?(GrammarRegexp))
+  end
+
+  # TODO: here assumed that the first expression is a literal; need to change later
+  def pattern
+    expressions.first.pattern
+  end
+  
+  # list of referenced file
+  def required_files
+    arr = Array.new
+    
+    if multi_unit?
+      expressions.first.choices.each do |expr|
+        if !(expr.kind_of? GrammarLiteral or expr.kind_of? GrammarRegexp) 
+          arr.push expr.file_name
+        end
+      end
+    else
+      self.expressions.each do |expr|
+        if !(expr.kind_of? GrammarLiteral or expr.kind_of? GrammarRegexp) 
+          arr.push expr.file_name
+        end
+      end
+    end
+    arr.uniq
+  end
+  
+  def to_s
+    symbol + " -> " + expressions.collect{|expr|expr.to_s}.join(", ")
+  end
+  
+end

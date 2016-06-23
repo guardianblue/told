@@ -1,0 +1,3 @@
+class GenericError < RuntimeError
+  
+end

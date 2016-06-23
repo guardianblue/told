@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<project name="TOLD IDE" default="main" basedir=".">
+  <taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler"/>
+
+  <property name="project.name" value="Told" />
+  <property name="project.version" value="v0.7" />
+  <property name="project.mainclass" value="hk.edu.cuhk.cse.told.Main" />
+  <property name="project.encoding" value="utf-8" />
+  <property name="target" value="1.5" />
+  <property name="source" value="1.5" />
+  
+  <property name="dir.src" location="src"/>
+  <property name="dir.build" location="build"/>
+  <property name="dir.dist"  location="dist"/>
+  <property name="dir.macos"  location="macos"/>
+  <property name="lib.java" location="lib-java"/>
+  <property name="lib.ruby" location="lib-ruby"/>
+  
+  <property name="app.name" value="Told.app"/>
+	<property name="app.version" value="0.7.3" />
+	<property name="app.jar" value="${dir.dist}/told.jar" />
+  
+  <property name="dir.app" location="${dir.dist}/${app.name}" />
+  <property name="dir.app.contents" location="${dir.app}/Contents" />
+  <property name="dir.app.contents.macos" location="${dir.app.contents}/MacOS" />
+  <property name="dir.app.contents.resources" location="${dir.app.contents}/Resources" />
+  <property name="dir.app.contents.resources.java" location="${dir.app.contents.resources}/Java" />
+  
+  <path id="compile.classpath">
+    <fileset dir="${lib.java}">
+	    <include name="*.jar" />
+    </fileset>
+  </path>
+  
+  <target name="main" depends="run" />
+  
+  <target name="run" description="Run the program" depends="dist-mac">
+    <exec executable="open">
+		  <arg value="-a"/>
+		  <arg value="${dir.app}"/>
+	  </exec>
+  </target>
+  
+  <target name="compile" description="Compile Java Source" depends="init">
+    <javac destdir="${dir.build}" source="${source}" target="${target}">
+       <src path="${dir.src}" />
+	     <classpath refid="compile.classpath" />
+    </javac>
+  </target>
+  
+  <target name="init" description="Initialization" depends="clean, init-dir" />
+  
+  <target name="clean" description="Clean distribution folder">
+    <delete dir="${dir.build}" />
+    <delete>
+    	<fileset dir="${dir.dist}" includes="**/*" />
+   	</delete>
+  </target>
+  
+  <target name="init-dir" description="Create Required Folders">
+    <mkdir dir="${dir.build}" />
+    <mkdir dir="${dir.dist}" />
+  </target>
+  
+  <target name="ruby-jar" description="Build jar bundle for ruby class files">
+    <jar destfile="${dir.dist}/told-ruby.jar" basedir="${lib.ruby}" excludes="*.svn, **/*.svn" />              
+  </target>
+  
+  <target name="dist" description="Create Fat-jar bundle" depends="compile, ruby-jar">
+    <fatjar.build output="${app.jar}">
+      <fatjar.manifest mainclass="${project.mainclass}"/>
+      <fatjar.filesource path="${dir.build}" relpath=""/>
+      <fatjar.jarsource file="${lib.java}/idw-gpl.jar" relpath=""/>
+	  <fatjar.jarsource file="${lib.java}/jruby-complete-1.4.0RC1.jar" relpath=""/>
+      <fatjar.jarsource file="${dir.dist}/told-ruby.jar" relpath=""/>
+      <fatjar.filesource path="images/" relpath="images"/>
+    </fatjar.build>
+  </target>
+	
+	<target name="read-revision">
+		<loadfile property="svn.revision" srcFile="${basedir}/.svn/entries">
+		<filterchain>
+			<headfilter lines="1" skip="3"/>
+			<filterreader classname="org.apache.tools.ant.filters.StripLineBreaks"/>
+		</filterchain>
+		</loadfile>
+	</target>
+	
+	<target name="dist-zip" depends="dist">
+		<zip destfile="${dir.dist}/told-${app.version}.zip" basedir="${dir.dist}" includes="told.jar" >
+		</zip>
+	</target>
+  
+  <target name="dist-mac" depends="dist, read-revision">
+    <jarbundler dir="${dir.dist}"
+                name="Told"
+                shortname="Told IDE"
+                signature="????"
+                mainclass="${project.mainclass}"
+                jar="${app.jar}"
+                icon="${dir.macos}/GenericJavaApp.icns"
+                jvmversion="1.5*"
+                version="${app.version}"
+                infostring="Teaching-Oriented Language Development Environment, copyright 2008"
+                build="${svn.revision}"
+                bundleid="hk.edu.cuhk.cse.Told" >
+      <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+      <javaproperty name="apple.awt.showGrowBox" value="false"/>
+    </jarbundler>
+  	<exec executable="hdiutil">
+  		<arg line="create -srcfolder ${dir.dist}/${app.name} ${dir.dist}/told-${app.version}.dmg"/>
+  	</exec>
+  </target>
+	
+	<target name="dist-all" depends="dist-mac, dist-zip" />
+	
+</project>

@@ -1,0 +1,5 @@
+begin_symbol    =	"begin" ?
+end_symbol      = "end"
+number          = /[0-9]+/
+statement       = "%" begin_symbol number number * end_symbol
+program         = statement *

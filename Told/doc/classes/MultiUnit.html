@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: MultiUnit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />MultiUnit</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/parser/multi_unit_rb.html">lib-ruby/parser/multi_unit.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+        <a href="LanguageUnit.html">
+LanguageUnit
+         </a>
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+The <a href="MultiUnit.html">MultiUnit</a> class implements a language unit
+that can be one of the language units defined in its <tt><a
+href="MultiUnit.html#M000003">possible_units</a></tt> class method. Any
+Grammar symbol that is in the following form:
+</p>
+<ul>
+<li>grammar_symbol = choice_a | choice_b | choice_c
+
+</li>
+</ul>
+<p>
+will be handled by this class
+</p>
+<p>
+Basically, you need not use the methods provided by this class. For most of
+the cases, calling <tt>evaluate_first</tt> and <tt>typecheck_first</tt>
+will suffice
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000006">match_token</a></li>
+  <li><a href="#M000001">multi_class</a></li>
+  <li><a href="#M000002">multi_instance</a></li>
+  <li><a href="#M000005">parse</a></li>
+  <li><a href="#M000003">possible_units</a></li>
+  <li><a href="#M000004">test</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000001"></a><b>multi_class</b>()
+  </div>
+  <div class="description">
+  <p>
+Determine whether this class is sub-class of <a
+href="MultiUnit.html">MultiUnit</a>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000001_source')" id="l_M000001_source">show source</a> ]</p>
+  <div id="M000001_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/multi_unit.rb, line 15</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">multi_class</span>
+    <span class="ruby-keyword kw">true</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000003"></a><b>possible_units</b>()
+  </div>
+  <div class="description">
+  <p>
+The array of parsable language units
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000003_source')" id="l_M000003_source">show source</a> ]</p>
+  <div id="M000003_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/multi_unit.rb, line 25</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">possible_units</span>
+    []
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000004"></a><b>test</b>(token)
+  </div>
+  <div class="description">
+  <p>
+Test if a token agrees with this <a href="MultiUnit.html">MultiUnit</a>.
+</p>
+<p>
+Return true if any of the <tt><a
+href="MultiUnit.html#M000003">possible_units</a></tt> matches the token
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000004_source')" id="l_M000004_source">show source</a> ]</p>
+  <div id="M000004_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/multi_unit.rb, line 32</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">test</span>(<span class="ruby-identifier">token</span>)
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">possible_units</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">unit</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;#{self.to_s} match &lt;#{unit}&gt; with #{token}&quot;</span>)
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">match_token</span>(<span class="ruby-identifier">unit</span>, <span class="ruby-identifier">token</span>)
+        <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;&lt;#{unit}&gt; matched&quot;</span>)
+        <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">true</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;#{self.to_s}: no match found&quot;</span>)
+    <span class="ruby-keyword kw">false</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Protected Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000006"></a><b>match_token</b>(unit, token)
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000006_source')" id="l_M000006_source">show source</a> ]</p>
+  <div id="M000006_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/multi_unit.rb, line 74</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">match_token</span>(<span class="ruby-identifier">unit</span>, <span class="ruby-identifier">token</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Regexp</span>
+      <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">unit</span> <span class="ruby-operator">=~</span> <span class="ruby-identifier">token</span>.<span class="ruby-identifier">content</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">Class</span>)
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-keyword kw">self</span>
+        <span class="ruby-comment cmt"># recursive definition</span>
+        <span class="ruby-keyword kw">false</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">LanguageUnit</span>)
+        <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">test</span>(<span class="ruby-identifier">token</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">false</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000002"></a><b>multi_instance</b>()
+  </div>
+  <div class="description">
+  <p>
+Determine whether this object is an instance of <a
+href="MultiUnit.html">MultiUnit</a>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000002_source')" id="l_M000002_source">show source</a> ]</p>
+  <div id="M000002_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/multi_unit.rb, line 20</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">multi_instance</span>
+    <span class="ruby-keyword kw">true</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000005"></a><b>parse</b>(tokenizer)
+  </div>
+  <div class="description">
+  <p>
+Parsing. Test against all possible unit, and <a
+href="MultiUnit.html#M000005">parse</a> with the first successful match
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000005_source')" id="l_M000005_source">show source</a> ]</p>
+  <div id="M000005_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/multi_unit.rb, line 45</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">tokenizer</span>)
+    <span class="ruby-identifier">parsed_unit</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">possible_units</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">unit</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">match_token</span>(<span class="ruby-identifier">unit</span>, <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>)
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Regexp</span>
+          <span class="ruby-comment cmt"># for literal tokens, do not parse it</span>
+          <span class="ruby-identifier">parsed_unit</span> = <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">next</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">parsed_unit</span>)
+          <span class="ruby-keyword kw">break</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-comment cmt"># for language unit, parse it recursively</span>
+          <span class="ruby-identifier">parsed_unit</span> = <span class="ruby-identifier">unit</span>.<span class="ruby-identifier">new</span>
+          <span class="ruby-identifier">parsed_unit</span>.<span class="ruby-identifier">parent</span> = <span class="ruby-keyword kw">self</span>
+          <span class="ruby-identifier">parsed_unit</span>.<span class="ruby-identifier">token</span> = <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">parsed_unit</span>)
+          <span class="ruby-identifier">parsed_unit</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">tokenizer</span>)
+          <span class="ruby-keyword kw">break</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parsed_unit</span>
+      <span class="ruby-identifier">parsed_unit</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParseError</span>, <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">expecting</span>(<span class="ruby-keyword kw">self</span>)
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

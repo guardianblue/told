@@ -1,0 +1,141 @@
+include Java
+
+require 'block_runner.rb'
+require 'toggle_flat_button.rb'
+
+class ConsoleView < Java::javax.swing.JTextPane
+  
+  DEFAULT_MAX_LINE = 1000
+  
+  attr_accessor :max_line, :scroll_lock, :doc
+  
+  def initialize(limit = DEFAULT_MAX_LINE)
+    super()
+    @max_line = limit
+    @scroll_lock = false
+    
+    @doc = getStyledDocument
+    
+    @font = java.awt.Font.new("Monospaced", java.awt.Font::ITALIC, 12)        
+    
+    @shared_style = javax.swing.text.SimpleAttributeSet.new
+    javax.swing.text.StyleConstants.setFontFamily(@shared_style, @font.getFamily());
+    javax.swing.text.StyleConstants.setFontSize(@shared_style, @font.getSize()); 
+      
+    @standard_style = javax.swing.text.SimpleAttributeSet.new(@shared_style)
+    javax.swing.text.StyleConstants.setForeground(@standard_style, java.awt.Color.black)
+    javax.swing.text.StyleConstants.setBold(@standard_style, false)
+    
+    @highlight_style = javax.swing.text.SimpleAttributeSet.new(@shared_style)
+    javax.swing.text.StyleConstants.setForeground(@highlight_style, java.awt.Color.red)
+    javax.swing.text.StyleConstants.setBold(@highlight_style, false)
+    
+    @doc.setCharacterAttributes(0, @doc.getLength + 1, @shared_style, false);
+
+  end
+  
+  def append_standard_text(text)
+    @doc.insertString(@doc.getLength, text, @standard_style)
+    assert_limit
+    #STDOUT.puts @scroll_lock
+    unless @scroll_lock
+      SwingUtils.invoke_block_later do
+     #   scroll_to_end
+      end
+    end
+  end
+  
+  def append_highlight_text(text)
+    @doc.insertString(@doc.getLength, text, @highlight_style)
+    assert_limit
+    #STDOUT.puts @scroll_lock
+    unless @scroll_lock
+      SwingUtils.invoke_block_later do
+      #  scroll_to_end
+      end
+    end
+  end
+  
+  protected
+  def getFullText
+    @doc.getText(0, @doc.getLength)
+  end
+  
+  def assert_limit
+    line_index = [0]
+    pos = 0
+    getFullText.each_line do |line|
+      line_index.push pos
+      pos += line.length
+    end
+    if line_index.length > @max_line
+      @doc.remove(0, line_index[line_index.length - @max_line])
+    end
+  end
+  
+  def scroll_to_end
+    setCaretPosition(getText.length)
+  end
+  
+end
+
+class ConsoleUpdateListener
+  def initialize(console, err = false)
+    @console = console
+    @err = err
+  end
+  
+  def update(content)
+    if @err
+      @console.append_highlight_text(content)
+    else
+      @console.append_standard_text(content)  
+    end
+  end
+end
+
+class ConsoleLockListener
+  include java.awt.event.MouseListener
+  
+  def initialize(console)
+    @console = console
+  end
+  
+  def mousePressed(e)
+    if e.getSource.kind_of?(ToggleFlatButton)
+      @console.scroll_lock = e.getSource.button_pressed
+    end
+  end
+  
+  def mouseEntered(e)
+  end
+  def mouseExited(e)
+  end
+  def mouseReleased(e)
+  end
+  def mouseClicked(e)
+  end  
+  
+end
+
+class ConsoleClearListener
+  include java.awt.event.MouseListener
+  
+  def initialize(console)
+    @console = console
+  end
+  
+  def mousePressed(e)
+    @console.setText("")
+  end
+  
+  def mouseEntered(e)
+  end
+  def mouseExited(e)
+  end
+  def mouseReleased(e)
+  end
+  def mouseClicked(e)
+  end  
+  
+end

@@ -1,0 +1,19 @@
+! integer x
+:= x, 4
+
+proc foo do
+  print "start of foo"
+  print @x
+  print "end of foo"
+end
+
+proc bar do
+  print "start of bar"
+  ! integer x
+  := x, 5
+  $foo
+  print "end of bar"
+end
+
+$foo
+$bar

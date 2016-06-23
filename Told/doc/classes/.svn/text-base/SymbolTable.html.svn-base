@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: SymbolTable</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />SymbolTable</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/symbol_table/symbol_table_rb.html">lib-ruby/symbol_table/symbol_table.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+The <a href="SymbolTable.html">SymbolTable</a> class encapsulates the
+operations used by the compile/interpreter regarding variable handling. In
+fact, a <a href="SymbolTable.html">SymbolTable</a> object only deals with
+symbols on a particular scope level. Therefore, it can be used or extend to
+provide the complete symbol table functionality based on different language
+designs (such as scoping policy)
+</p>
+<p>
+You can change the type of <a href="SymbolTable.html">SymbolTable</a> to
+use in the Settings Panel
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000040">add</a></li>
+  <li><a href="#M000038">addListener</a></li>
+  <li><a href="#M000039">add_entry</a></li>
+  <li><a href="#M000041">contains?</a></li>
+  <li><a href="#M000046">enter_scope</a></li>
+  <li><a href="#M000047">exit_scope</a></li>
+  <li><a href="#M000042">find</a></li>
+  <li><a href="#M000050">fire_updated</a></li>
+  <li><a href="#M000048">has_symbol?</a></li>
+  <li><a href="#M000043">lookup_type</a></li>
+  <li><a href="#M000044">lookup_value</a></li>
+  <li><a href="#M000037">new</a></li>
+  <li><a href="#M000049">set</a></li>
+  <li><a href="#M000051">unique_identifier</a></li>
+  <li><a href="#M000045">update</a></li>
+  </ul>
+
+
+
+
+  <div class="sectiontitle">Constants</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class="attr-name">DEFAULT_SCOPE</td>
+    <td>=</td>
+    <td class="attr-value">&quot;global&quot;</td>
+  </tr>
+  <tr valign='top'>
+    <td class="attr-name">DEFAULT_TYPE</td>
+    <td>=</td>
+    <td class="attr-value">&quot;string&quot;</td>
+  </tr>
+  </table>
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>scope</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>table</td>
+    <td class='attr-desc'></td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000037"></a><b>new</b>(scope = DEFAULT_SCOPE)
+  </div>
+  <div class="description">
+  <p>
+Instansiate a symbol table object with a specified scope. If the scope is
+not specified, the global scope will be used.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000037_source')" id="l_M000037_source">show source</a> ]</p>
+  <div id="M000037_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 17</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">scope</span> = <span class="ruby-constant">DEFAULT_SCOPE</span>)
+    <span class="ruby-ivar">@table</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-ivar">@scope</span> = <span class="ruby-identifier">scope</span>
+    <span class="ruby-ivar">@listeners</span> = []
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000040"></a><b>add</b>(entry)
+  </div>
+  <div class="description">
+  <p>
+Same as <a href="SymbolTable.html#M000039">SymbolTable#add_entry</a>, but
+takes a <a href="SymbolEntry.html">SymbolEntry</a> as input
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000040_source')" id="l_M000040_source">show source</a> ]</p>
+  <div id="M000040_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 35</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add</span>(<span class="ruby-identifier">entry</span>)
+    <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:symbol</span>, <span class="ruby-node">&quot;Added Entry: #{entry.name} in scope #{@scope}&quot;</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">table</span>.<span class="ruby-identifier">has_key?</span> <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">name</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">SymbolError</span>, <span class="ruby-constant">SymbolError</span>.<span class="ruby-identifier">multiple_declare</span>(<span class="ruby-identifier">entry</span>.<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">table</span>[<span class="ruby-identifier">entry</span>.<span class="ruby-identifier">name</span>] = <span class="ruby-identifier">entry</span>
+    <span class="ruby-identifier">fire_updated</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000038"></a><b>addListener</b>(l)
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000038_source')" id="l_M000038_source">show source</a> ]</p>
+  <div id="M000038_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 23</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">addListener</span>(<span class="ruby-identifier">l</span>)
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">l</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000039"></a><b>add_entry</b>(name, type, value = nil)
+  </div>
+  <div class="description">
+  <p>
+Add(Declare) a symbol entry in the symbol table If there exist a symbol
+with the same name, a <a href="SymbolError.html">SymbolError</a> will be
+raised You are advised to prevent the exception by check for any conflict
+before hand
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000039_source')" id="l_M000039_source">show source</a> ]</p>
+  <div id="M000039_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 30</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_entry</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">value</span> = <span class="ruby-keyword kw">nil</span>)
+    <span class="ruby-identifier">add</span>(<span class="ruby-constant">SymbolEntry</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">type</span>, <span class="ruby-identifier">value</span>))
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000041"></a><b>contains?</b>(name)
+  </div>
+  <div class="description">
+  <p>
+Check whether a symbol in defined in any scope and return its value, return
+nil otherwise If there are more than one entry with the same name The most
+appropiate one will be returned based on the type of this symbol table.
+</p>
+  </div>
+<div class="aka">
+  This method is also aliased as
+  <a href="SymbolTable.html#M000048">has_symbol?</a>
+</div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000041_source')" id="l_M000041_source">show source</a> ]</p>
+  <div id="M000041_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 47</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">contains?</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-identifier">table</span>[<span class="ruby-identifier">name</span>]
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000046"></a><b>enter_scope</b>(unit)
+  </div>
+  <div class="description">
+  <p>
+Enter a different scope. You can use the corresponding LanugaugeUnit as the
+unique identifier of this scope.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000046_source')" id="l_M000046_source">show source</a> ]</p>
+  <div id="M000046_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 90</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">enter_scope</span>(<span class="ruby-identifier">unit</span>)
+    <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:symbol</span>, <span class="ruby-node">&quot;Enter scope of: #{unique_identifier(unit)}&quot;</span>)
+    <span class="ruby-identifier">fire_updated</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000047"></a><b>exit_scope</b>()
+  </div>
+  <div class="description">
+  <p>
+Exit the current scope. The symbol table will recover to previous scope
+based on the type of this symbol table
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000047_source')" id="l_M000047_source">show source</a> ]</p>
+  <div id="M000047_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 97</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">exit_scope</span>
+    <span class="ruby-identifier">fire_updated</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000042"></a><b>find</b>(name)
+  </div>
+  <div class="description">
+  <p>
+Similiar to SymbolTable#contains?, finds an entry with the specified name
+The difference is that a <a href="SymbolError.html">SymbolError</a> will be
+raised if the entry is not found
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000042_source')" id="l_M000042_source">show source</a> ]</p>
+  <div id="M000042_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 53</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">find</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">table</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">name</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">SymbolError</span>, <span class="ruby-constant">SymbolError</span>.<span class="ruby-identifier">must_declare</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">table</span>[<span class="ruby-identifier">name</span>]
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000048"></a><b>has_symbol?</b>(name)
+  </div>
+  <div class="description">
+  <p>
+Alias for contains?
+</p>
+  </div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000043"></a><b>lookup_type</b>(name)
+  </div>
+  <div class="description">
+  <p>
+Return the type of a symbol. If the symbol is not defined, <a
+href="SymbolError.html">SymbolError</a> will be raised.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000043_source')" id="l_M000043_source">show source</a> ]</p>
+  <div id="M000043_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 62</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">lookup_type</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">table</span>.<span class="ruby-identifier">has_key?</span>(<span class="ruby-identifier">name</span>)
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">SymbolError</span>, <span class="ruby-constant">SymbolError</span>.<span class="ruby-identifier">must_declare</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">table</span>[<span class="ruby-identifier">name</span>].<span class="ruby-identifier">type</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000044"></a><b>lookup_value</b>(name)
+  </div>
+  <div class="description">
+  <p>
+Return the value of a symbol. If the symbol is not defined, or does not
+have a value yet, <a href="SymbolError.html">SymbolError</a> will be raised
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000044_source')" id="l_M000044_source">show source</a> ]</p>
+  <div id="M000044_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 71</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">lookup_value</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-identifier">entry</span> = <span class="ruby-identifier">find</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">value</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">SymbolError</span>, <span class="ruby-constant">SymbolError</span>.<span class="ruby-identifier">not_initialized</span>(<span class="ruby-identifier">name</span>)
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">value</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000049"></a><b>set</b>(name, value)
+  </div>
+  <div class="description">
+  <p>
+Alias for <a href="SymbolTable.html#M000045">update</a>
+</p>
+  </div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000045"></a><b>update</b>(name, value)
+  </div>
+  <div class="description">
+  <p>
+Change the value of a symbol. If the symbol is not defined, <a
+href="SymbolError.html">SymbolError</a> will be raised.
+</p>
+  </div>
+<div class="aka">
+  This method is also aliased as
+  <a href="SymbolTable.html#M000049">set</a>
+</div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000045_source')" id="l_M000045_source">show source</a> ]</p>
+  <div id="M000045_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 81</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">update</span>(<span class="ruby-identifier">name</span>, <span class="ruby-identifier">value</span>)
+    <span class="ruby-identifier">entry</span> = <span class="ruby-identifier">find</span> <span class="ruby-identifier">name</span>
+    <span class="ruby-identifier">entry</span>.<span class="ruby-identifier">value</span> = <span class="ruby-identifier">value</span>
+    <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:symbol</span>, <span class="ruby-node">&quot;Updating symbol: #{name} with value [#{value}]&quot;</span>)
+    <span class="ruby-identifier">fire_updated</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Protected Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000050"></a><b>fire_updated</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000050_source')" id="l_M000050_source">show source</a> ]</p>
+  <div id="M000050_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 105</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_updated</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">symbol_table_updated</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000051"></a><b>unique_identifier</b>(unit)
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000051_source')" id="l_M000051_source">show source</a> ]</p>
+  <div id="M000051_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/symbol_table/symbol_table.rb, line 111</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">unique_identifier</span>(<span class="ruby-identifier">unit</span>)
+    <span class="ruby-node">&quot;&lt;#{unit.to_s}#:#{unit.id}&gt;&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

@@ -1,0 +1,41 @@
+10
+
+dir
+120
+svn+ssh://brian@wepher.com/told/trunk/macos
+svn+ssh://brian@wepher.com/told
+
+
+
+2008-09-03T11:22:08.835323Z
+69
+brian
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+9193094c-8c95-44d0-ac0a-5e7087aa2aa6
+
+GenericJavaApp.icns
+file
+
+
+
+
+2008-09-03T10:25:25.000000Z
+950d4710655b0b488e59d7e1e2ba5487
+2008-09-03T11:22:08.835323Z
+69
+brian
+has-props
+

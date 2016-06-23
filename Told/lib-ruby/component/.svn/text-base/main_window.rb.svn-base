@@ -1,0 +1,855 @@
+include Java
+
+require 'component/console/console_pane.rb'
+require 'component/editor/code_pane.rb'
+require 'component/editor/grammar_pane.rb'
+require 'component/editor/semantic_pane.rb'
+require 'component/editor/settings_pane.rb'
+require 'component/explorer/explorer_pane.rb'
+require 'component/error/error_pane.rb'
+require 'component/symbol_table/symbol_table_pane.rb'
+require 'component/syntax_tree/syntax_tree_pane.rb'
+require 'component/tokenizer/tokenizer_pane.rb'
+
+require 'project.rb'
+require 'grammar/grammar.rb'
+require 'runtime.rb'
+
+require 'tokenizer/token_error.rb'
+require 'parser/main_class_error.rb'
+require 'parser/evaluator_error.rb'
+
+#require 'idw-gpl.jar'
+
+include_class "net.infonode.docking.View"
+include_class "net.infonode.docking.TabWindow"
+include_class "net.infonode.docking.SplitWindow"
+include_class "net.infonode.docking.util.DockingUtil"
+include_class "net.infonode.docking.util.StringViewMap"
+include_class "net.infonode.docking.properties.DockingWindowProperties"
+include_class "net.infonode.docking.properties.TabWindowProperties"
+include_class "net.infonode.docking.DockingWindowListener"
+
+class MainWindow < javax.swing.JFrame
+  include java.awt.event.ActionListener
+  include java.awt.event.WindowListener
+  include javax.swing.event.MenuListener
+  
+  class DockingWindowAdapter
+    include DockingWindowListener
+    
+    def initialize(main_window, dock_type = :semantics)
+      super()
+      @main_window = main_window
+      @dock_type = dock_type
+    end
+    
+    def windowClosing(window)
+      @main_window.dock_closing(window, @dock_type)
+    end
+    
+    def method_missing(meth, *args)
+      if /^window/ =~ meth.to_s
+        # do nothing
+      else
+        self[meth]
+      end
+      
+    end
+    
+  end
+  
+  VERTICAL_SPLIT = true
+  HORIZONTAL_SPLIT = false
+  TITLE = "Teaching-Oriented Language Development Environment"
+  
+  attr_accessor :explorer_pane
+  attr_accessor :cosole_pane
+  attr_accessor :syntax_tree_pane
+  attr_accessor :symbol_table_pane
+  attr_accessor :tokenizer_pane
+  attr_accessor :grammar_pane
+  attr_accessor :code_panes
+  attr_accessor :symbol_editors
+  attr_accessor :error_pane
+  attr_accessor :settings_pane
+  
+  attr_accessor :file_chooser
+  attr_accessor :runtime
+  attr_accessor :grammar
+  attr_accessor :project
+  
+  # Constructor
+  # Create the Main Window, its components, and a new Project object
+  def initialize()
+    super(TITLE)
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE)
+
+    @semantic_editors = Hash.new
+    
+    @file_chooser = javax.swing.JFileChooser.new
+    
+    @saved = true
+    @opening = false
+    @changed_editors = Hash.new
+    @recent_files = Array.new
+    addWindowListener(self)
+    
+    create_components
+    new_project
+  end
+    
+  #** Listeners **
+  
+  #-- Main menu mouse actions
+  def actionPerformed(e)
+    source = e.getSource
+    
+    if (e.getActionCommand == "recent")
+      if check_unsaved
+        open_project(e.getSource.getText)
+      end
+    elsif (e.getActionCommand =~ /^main_tab/)
+      @main_tab.setSelectedTab(e.getActionCommand.match(/(\d+)$/)[1].to_i)
+    elsif (e.getActionCommand =~ /^bottom_tab/)
+      @bottom_tab.setSelectedTab(e.getActionCommand.match(/(\d+)$/)[1].to_i)
+    elsif (source == @menu_items[:file][:project_new])
+      new_project
+    elsif (source == @menu_items[:file][:project_open])
+      open_project_as
+    elsif (source == @menu_items[:file][:project_save])
+      save_clicked
+    elsif (source == @menu_items[:file][:project_save_as])
+      save_project_as
+      
+    elsif (source == @menu_items[:message][:tokenizer])
+      DebugManager.messages[:tokenizer] = source.getState
+    elsif (source == @menu_items[:message][:parser])
+      DebugManager.messages[:parser] = source.getState
+    elsif (source == @menu_items[:message][:runtime])
+      DebugManager.messages[:runtime] = source.getState
+    elsif (source == @menu_items[:message][:symbol])
+      DebugManager.messages[:symbol] = source.getState
+    elsif (source == @menu_items[:message][:error])
+      DebugManager.messages[:error] = source.getState
+    elsif (source == @menu_items[:message][:user])
+      DebugManager.messages[:user] = source.getState
+    end
+  end
+  #++ End of Mouse Event Handling
+  
+  #-- Window event handling  
+  def windowActivated(e)
+    
+  end
+
+  def windowClosed(e) 
+  
+  end
+
+  def windowClosing(e) 
+    java.lang.System.exit(0) if check_unsaved  
+  end
+
+  def windowDeactivated(e) 
+  
+  end
+
+  def windowDeiconified(e) 
+  
+  end
+
+  def windowIconified(e) 
+  
+  end
+
+  def windowOpened(e)
+  
+  end
+  #++ End of Window Event Handling
+
+  #++ Menu Listener Handling
+  def menuSelected(e)
+    if e.getSource == @menus[:window]
+      build_window_menu
+    end
+  end
+  
+  def menuDeselected(e)
+  
+  end
+
+  def menuCancelled(e)
+    
+  end
+  #++ End of Menu Listener Handling
+  
+  #-- Event propangate from Docking Window
+  def dock_closing(dock_window, dock_type)
+    if dock_type == :semantics
+      symbol_name = dock_window.getName
+      if dock_window.kind_of?(View)
+        component = dock_window.getComponent
+        if component.kind_of?(SemanticPane)
+          # save content for this symbol editor
+          @grammar.semantics[symbol_name].typechecking = component.editors[:typechecking].text
+          @grammar.semantics[symbol_name].evaluation = component.editors[:evaluation].text
+        end
+      end
+      @semantic_editors.delete(symbol_name)
+    elsif dock_type == :settings
+      # TODO: prompt for unsaved settings
+    end
+  end
+  #++ End of Docking Window Event Handling
+
+  # Listener Callback for Runtime
+  def runtime_stepped
+    model = SyntaxInfoModel.new(@runtime.next_node)
+    treenode = @syntax_tree_pane.model.lookup(@runtime.next_node)
+    @syntax_tree_pane.set_node_cursor(treenode)
+    @code_panes[0].editor.reset_style
+    @code_panes[0].editor.set_style(model.line_start, model.column_start, model.line_end, model.column_end, :stepthrough)
+    @code_panes[0].step_finish
+  end
+  
+  def runtime_stepping
+    
+  end
+  
+  def runtime_breakpoint
+    level_debug(:runtime, "Breakpoint initiated at #{@runtime.next_node}")
+    model = SyntaxInfoModel.new(@runtime.next_node)
+    treenode = @syntax_tree_pane.model.lookup(@runtime.next_node)
+    #@syntax_tree_pane.update_table(model)
+    @syntax_tree_pane.set_node_cursor(treenode)
+    @code_panes[0].editor.reset_style
+    @code_panes[0].editor.set_style(model.line_start, model.column_start, model.line_end, model.column_end, :breakpoint)
+    @code_panes[0].step_finish
+  end
+  
+  def runtime_started
+    level_debug(:runtime, "Runtime Started")
+  end
+  
+  def runtime_terminated
+    level_debug(:runtime, "Runtime terminated by user")
+    @code_panes[0].standby_mode
+    @console_pane.standby_mode
+  end
+  
+  def runtime_finished
+    level_debug(:runtime, "Runtime ended normally")
+    if @runtime.stepthrough
+      @syntax_tree_pane.set_node_cursor(nil)
+    end
+    @code_panes[0].standby_mode
+    @console_pane.standby_mode
+  end
+
+  def runtime_error
+    #level_debug(:error, EvaluatorError.new(@runtime.grammar, @runtime.phase, @runtime.next_node, @runtime.error.message, @runtime.error.backtrace.first))
+    level_debug(:error, @runtime.error)
+    @code_panes[0].standby_mode
+    @console_pane.standby_mode
+  end
+  
+  def runtime_input
+    model = SyntaxInfoModel.new(@runtime.last_node)
+    treenode = @syntax_tree_pane.model.lookup(@runtime.last_node)
+    #@syntax_tree_pane.update_table(model)
+    @syntax_tree_pane.set_node_cursor(treenode)
+    @code_panes[0].editor.reset_style
+    @code_panes[0].editor.set_style(model.line_start, model.column_start, model.line_end, model.column_end, :breakpoint)
+    show_console_pane
+    @console_pane.input_mode
+  end
+  
+  def changed(source = nil)
+    unless @opening
+      @saved = false
+      title = TITLE
+      if @working_path
+        title += " - [#{@working_path}]"
+      end
+      title += "*"
+      setTitle(title)
+      
+      # mark corresponding editor with unsaved indicator
+      if source
+        @changed_editors[source.tab_id] = source
+        set_tab_title(source.tab_id, "*#{source.title}")
+      end
+    end
+  end
+  
+  def show_settings
+    view = @view_map.getView("settings_pane") 
+    window_index = @main_tab.getChildWindowIndex(view)
+    if (window_index != -1)
+      @main_tab.setSelectedTab(window_index)      
+    else
+      @main_tab.addTab(@view_map.getView("settings_pane"))
+    end
+  end
+  
+  def update_settings
+    @project.property_values = @settings_pane.property_values
+  end  
+  
+  def close_settings
+    
+  end
+
+  def show_semantic_editor(node_name)
+    # check if the editor is already opened
+    if @semantic_editors.has_key?(node_name)
+      @main_tab.setSelectedTab(@main_tab.getChildWindowIndex(@semantic_editors[node_name]))      
+    else
+      tab_id = "semantic/#{node_name}"
+      pane = SemanticPane.new(self, node_name)
+      if @grammar.semantics.has_key?(node_name)
+        pane.editors[:typechecking].text = @grammar.semantics[node_name].typechecking
+        pane.editors[:evaluation].text = @grammar.semantics[node_name].evaluation
+      end
+      view = View.new(node_name, $icon_library.getIcon("code_green"), pane)
+      view.getWindowProperties.addSuperObject(@editor_options)
+      view.setName(node_name)
+      @semantic_editors[node_name] = view
+      pane.tab_id = tab_id
+      @view_map.addView(tab_id, view)
+      @main_tab.addTab(view)
+      view.addListener(DockingWindowAdapter.new(self))
+    end
+    
+  end
+  
+  # called to close any opened semantic editors upon new project is opened
+  def close_semantic_editors
+    @semantic_editors.each_value do |editor|
+      editor.close
+    end
+    @semantic_editors.clear
+  end
+
+  def run_code(code_editor, stepthrough_mode)
+    error = nil
+    begin
+      code_editor.editor.reset_style
+      @console_pane.clear
+    
+      if @grammar.errors?
+        error = RuntimeError.new("There are errors in Grammar Definition.\nSolve them before running any sample code") 
+      elsif @grammar.empty?
+        error = RuntimeError.new("Grammar is not defined.\n")
+      else
+        @runtime = Runtime.new(@grammar)
+        @runtime.add_listener(self)
+        @runtime.create_tokenizer(@project.property_values["manual_space"].to_i == 1)
+        @runtime.create_symbol_table(@project.property_values["symbol_table_type"].to_i)
+        @runtime.create_parser
+        @runtime.stepthrough = stepthrough_mode
+        @symbol_table_pane.symbol_table = @runtime.symbol_table
+        @runtime.source = code_editor.editor.text
+        @runtime.tokenize
+        @tokenizer_pane.tokenizer = @runtime.tokenizer
+        @runtime.parse
+        @syntax_tree_pane.set_syntax_tree(@runtime.root_node)
+        @runtime.typecheck_and_evaluate
+      end
+    rescue InfiniteTokenError => e
+      error = e
+    rescue TokenError => e
+      # tokenizing error
+      error = e
+      code_editor.editor.set_style(error.line, error.column, error.line + 1, -1, :invalid)
+    rescue ParseError => e
+      # parse error
+      error = e
+      if (error.token)
+        code_editor.editor.set_style(error.token.line_number, error.token.column_start, error.token.line_number, error.token.column_end, :invalid)
+      end
+    rescue ScriptError, NameError => e
+      # puts e.message
+      # Retrieve Error Information from Runtime
+      error = @runtime.error
+    end
+
+    if error
+      level_debug(:error, error.to_s)
+      #@syntax_tree_pane.deactivate("Errors occurred.\nSyntax tree cannot be visualized.")
+      code_editor.standby_mode!
+    end
+    
+    error.nil?
+  end
+  
+  # continue to run the program till then end
+  def run_continue(code_editor)
+    @runtime.stepthrough = false
+    @runtime.run_step
+  end
+  
+  # step 1 syntax node in stepthrough mode
+  def stepthrough(code_editor)
+    @runtime.stepthrough = true
+    @runtime.run_step
+  end
+  
+  # terminate running code
+  def stop_code
+    @runtime.terminate
+  end
+  
+  def check_unsaved
+    if @saved
+      true
+    else
+      javax.swing.JOptionPane::showConfirmDialog(self, "The current project have unsaved changes.\nDiscard?", "Changes unsaved", javax.swing.JOptionPane::YES_NO_OPTION) == javax.swing.JOptionPane::YES_OPTION
+    end
+  end
+  
+  def new_project
+    return unless check_unsaved
+
+    @opening = true
+    if @grammar
+      @grammar.remove_listener(self)
+    end
+    @project = Project.new
+    @grammar = @project.grammar
+    @grammar.add_listener(self)
+    @working_path = nil
+    @grammar_pane.mode = :edit
+    @grammar_pane.editor.text = @grammar.source
+    set_tab_title("grammar_view", @grammar_pane.title)
+    @grammar_pane.repaint
+    @code_panes[0].editor.text = @project.codes[0]
+    @code_panes[0].standby_mode
+    set_tab_title("code_view", @code_panes[0].title)
+    grammar_changed(@grammar)
+    setTitle(TITLE)
+    show_grammar_pane
+    close_semantic_editors
+    @settings_pane.property_values = @project.property_values
+    @syntax_tree_pane.deactivate
+    @symbol_table_pane.deactivate
+    @tokenizer_pane.deactivate
+    @console_pane.clear
+    
+    @saved = true
+    @opening = false    
+  end
+  
+  def open_project_as
+    
+    # prompt if current project have unsaved changes
+    return unless check_unsaved
+
+    # get path from user
+    @working_path = open_dialog
+    
+    # cancelled by user
+    return unless @working_path
+    
+    # save the project
+    open_project(@working_path)
+  end
+  
+  def open_project(path)
+    begin
+      @opening = true
+      # remove old listener
+      @grammar.remove_listener(self)
+      
+      # load project
+      @project = Project.read_file(path)
+      @grammar = @project.grammar
+      @grammar.add_listener(self)
+      
+      @grammar_pane.editor.text = @grammar.source
+      @settings_pane.property_values = @project.property_values
+      @code_panes[0].editor.text = @project.codes[0]
+      @code_panes[0].standby_mode
+      show_grammar_pane
+      
+      # update editors
+      @grammar_pane.mode = :visualize
+      @working_path = path
+      close_semantic_editors
+      
+      @syntax_tree_pane.deactivate
+      @symbol_table_pane.deactivate
+      @tokenizer_pane.deactivate
+      @console_pane.clear
+    
+      # Update IDE Status
+      update_recent_files(@working_path)
+      saved
+    rescue => e
+      # File format invalid or does not exist
+      level_debug(:error, "[SYSTEM] While Opening Project File\n>> #{e.message}")
+      javax.swing.JOptionPane::showMessageDialog(self, "Unable to open project file: #{path}", "Error", javax.swing.JOptionPane::ERROR_MESSAGE)
+      @recent_files.delete(path)
+      update_recent_files
+    ensure
+      @opening = false
+    end
+  end
+  
+  def save_clicked
+    if @working_path
+      save_project
+    else
+      save_project_as
+    end
+  end
+  
+  def save_project
+    # update the project object
+    @grammar_pane.mode = :visualize
+    @project.grammar.source = @grammar_pane.editor.text
+    @project.codes[0] = @code_panes[0].editor.text
+    
+    # reflect changes of semantic panes
+    @semantic_editors.each_pair do |symbol_name, view|
+      component = view.getComponent
+      @grammar.semantics[symbol_name].typechecking = component.editors[:typechecking].text
+      @grammar.semantics[symbol_name].evaluation = component.editors[:evaluation].text
+    end
+    update_settings
+    @project.write_file(@working_path)
+    
+    # Update IDE status
+    update_recent_files(@working_path)
+    saved
+  end
+  
+  def save_project_as
+    # get path from user
+    path = save_dialog
+    
+    # cancelled by user
+    return nil unless path
+    
+    # save the project
+    @working_path = path
+    save_project
+  end
+
+  
+  # ** Grammar changes **
+  def grammar_changed(grammar)
+    @explorer_pane.update_symbols(grammar)
+    @grammar_pane.syntax_highlight(grammar)
+    @error_pane.update(grammar)
+    if grammar.issues?
+      @bottom_tab.setSelectedTab(@bottom_tab.getChildWindowIndex(@view_map.getView("error_pane")))      
+    end
+  end
+  
+    def tab_title(tab_id)
+    view = @view_map.getView(tab_id)
+    if view
+      view.getTitle
+    else
+      nil
+    end
+  end
+  
+  def set_tab_title(tab_id, new_title)
+    view = @view_map.getView(tab_id)
+    if view
+      properties = view.getViewProperties
+      properties.setTitle(new_title)
+    end
+  end
+  
+  def show_grammar_pane
+    @main_tab.setSelectedTab(0)
+  end
+  
+  def show_code_pane
+    @main_tab.setSelectedTab(1)
+  end
+  
+  def show_console_pane
+    @bottom_tab.setSelectedTab(0)
+  end
+  
+  protected
+  
+  def update_recent_files(file = "")
+    
+    filename = file.clone
+    unless(filename.empty?)
+      # put the filename in the last position
+      @recent_files.delete(filename)
+      @recent_files.push(filename)
+    end
+    
+    if @recent_files.length > 4
+      @recent_files = @recent_files[1..4]
+    end
+    
+    preferences = self.user_preferences
+    4.times do |index|
+      preferences.put("recent#{index+1}", index >= @recent_files.length ? "" : @recent_files[index])
+    end
+  
+    # populate the recent file list to the menu
+    populate_recent_files
+    
+  end
+  
+  def populate_recent_files
+    
+    @menu_items[:file][:project_recent].removeAll
+    @recent_files.reverse.each do |file|
+      item = javax.swing.JMenuItem.new(file)
+      item.setActionCommand("recent")
+      item.addActionListener(self)
+      @menu_items[:file][:project_recent].add(item)
+    end
+    
+  end
+
+  def user_preferences
+    java.util.prefs.Preferences.userRoot.node("/hk/edu/cuhk/cse/told")
+  end
+
+  # Update IDE Status after the current project is saved, or a project is just opened
+  def saved
+    @saved = true
+    
+    # change window title
+    title = "#{TITLE} - [#{@working_path}]"
+    setTitle(title)
+    
+    # reset all editors
+    @changed_editors.each do |tab_id, editor|
+      set_tab_title(tab_id, editor.title)
+      editor.project_saved
+    end
+    @changed_editors.clear
+  end
+  
+  # Show the save project dialog
+  # return nil if user cancelled the action
+  # return the selected path otherwise
+  def save_dialog
+    value = @file_chooser.showSaveDialog(self)
+    if (value == javax.swing.JFileChooser::APPROVE_OPTION)
+      
+      # Warn for existing file 
+      if @file_chooser.getSelectedFile.exists
+        path = @file_chooser.getSelectedFile.getAbsolutePath
+        result = javax.swing.JOptionPane::showConfirmDialog(self, "File #{path} already exists.\nOverwrite it?", "File Overwrite Confirmation", javax.swing.JOptionPane::YES_NO_OPTION)
+        if (result == javax.swing.JOptionPane::NO_OPTION)
+          return nil
+        end
+      end
+      
+      # return the selected file
+      @file_chooser.getSelectedFile.getAbsolutePath
+    else
+      nil
+    end
+  end
+  
+  def open_dialog
+    value = @file_chooser.showOpenDialog(self);
+    if (value == javax.swing.JFileChooser::APPROVE_OPTION)
+      @file_chooser.getSelectedFile.getAbsolutePath
+    else
+      nil
+    end
+  end
+  
+  def add_to_view(tab_id, component, editor = false)
+    view = View.new(component.title, $icon_library.getIcon(component.icon), component)
+    component.tab_id = tab_id
+    if (editor)
+      view.getWindowProperties.addSuperObject(@editor_options)
+    end
+    @view_map.addView(tab_id, view)
+  end
+  
+  def build_window_menu
+    menu_anchor = @menus[:window]
+    menu = @menu_items[:window]
+    
+    # clear old items
+    menu_anchor.removeAll
+    menu.each do |item|
+      self.removeActionListener(item)
+    end
+    menu.clear
+    
+    tab_type = ["main_tab", "bottom_tab"]
+    [@main_tab, @bottom_tab].each_with_index do |tab, tab_type_i|
+      tab.getChildWindowCount.times do |i|
+        item = javax.swing.JCheckBoxMenuItem.new(tab.getChildWindow(i).getTitle)
+        if i == tab.getChildWindowIndex(tab.getSelectedWindow)
+          item.setState(true)
+        end
+        item.setActionCommand("#{tab_type[tab_type_i]} #{i.to_s}")
+        item.addActionListener(self)
+        menu_anchor.add(item)
+      end
+    end
+    menu_anchor.insertSeparator(@main_tab.getChildWindowCount)
+    
+  end
+  
+  def create_components
+    
+    # --- Create Panels -----------------------------------
+    @console_pane = ConsolePane.new(self)
+    @explorer_pane = ExplorerPane.new(self)
+    @syntax_tree_pane = SyntaxTreePane.new(self)
+    @symbol_table_pane = SymbolTablePane.new(self)
+    @settings_pane = SettingsPane.new(self)
+    @tokenizer_pane = TokenizerPane.new(self)
+    @grammar_pane = GrammarPane.new(self)
+    @error_pane = ErrorPane.new(self)
+    @code_panes = Array.new
+    @code_panes.push(CodePane.new(self))
+    
+    # --- Create dockable environment ---------------------
+    
+    # options for views 
+    @dock_options = DockingWindowProperties.new
+    @dock_options.setCloseEnabled(false)
+    @dock_options.setUndockEnabled(false)
+    @dock_options.setMaximizeEnabled(false)
+    @dock_options.setDragEnabled(false)
+    @main_window_options = DockingWindowProperties.new
+    @main_window_options.setMaximizeEnabled(true)
+    @main_window_options.setCloseEnabled(false)
+    @main_tab_options = TabWindowProperties.new
+    @main_tab_options.getMaximizeButtonProperties.setVisible(false)
+    @main_tab_options.getRestoreButtonProperties.setVisible(false)
+    @main_tab_options.getCloseButtonProperties.setVisible(false)
+    @editor_options = DockingWindowProperties.new
+    @editor_options.setCloseEnabled(true)
+    
+    # setup views
+    @view_map = StringViewMap.new
+    add_to_view("syntax_tree_pane", @syntax_tree_pane)
+    add_to_view("code_view", @code_panes[0])
+    add_to_view("grammar_view", @grammar_pane)
+    add_to_view("console_pane", @console_pane)
+    add_to_view("symbol_table_pane", @symbol_table_pane)
+    add_to_view("tokenizer_pane", @tokenizer_pane)
+    add_to_view("explorer_pane", @explorer_pane)
+    add_to_view("error_pane", @error_pane)
+    add_to_view("settings_pane", @settings_pane, true)
+    @view_map.getView("settings_pane").addListener(DockingWindowAdapter.new(self, :settings))
+
+    @dock = DockingUtil.createRootWindow(@view_map, false)
+    
+    @dock.getRootWindowProperties.getDockingWindowProperties.addSuperObject(@dock_options)
+    
+    @left_tab = TabWindow.new
+    @left_tab.addTab(@view_map.getView("explorer_pane"))
+
+    @right_tab = TabWindow.new
+    @right_tab.addTab(@view_map.getView("syntax_tree_pane"))
+
+    @main_tab = TabWindow.new
+    @main_tab.getWindowProperties.addSuperObject(@main_window_options)
+    @main_tab.getTabWindowProperties.addSuperObject(@main_tab_options)
+    @main_tab.addTab(@view_map.getView("grammar_view"))
+    @main_tab.addTab(@view_map.getView("code_view"))
+    show_grammar_pane
+    
+    @bottom_tab = TabWindow.new
+    @bottom_tab.addTab(@view_map.getView("console_pane"))
+    @bottom_tab.addTab(@view_map.getView("symbol_table_pane"))
+    @bottom_tab.addTab(@view_map.getView("tokenizer_pane"))
+    @bottom_tab.addTab(@view_map.getView("error_pane"))
+    @bottom_tab.setSelectedTab(0)
+    
+    @content_split = SplitWindow.new(HORIZONTAL_SPLIT, 0.6, @main_tab, @bottom_tab)
+    @right_split = SplitWindow.new(VERTICAL_SPLIT, 0.75, @content_split, @right_tab)
+    @main_split = SplitWindow.new(VERTICAL_SPLIT, 0.2, @left_tab, @right_split)
+    
+    @dock.setWindow(@main_split)
+
+    # create menus
+    @menubar = javax.swing.JMenuBar.new
+    
+    @menus = Hash.new
+    @menus[:file] = javax.swing.JMenu.new("File")
+    @menus[:message] = javax.swing.JMenu.new("Debug Messages")
+    @menus[:window] = javax.swing.JMenu.new("Window")
+    @menus[:window].addMenuListener(self)
+    
+    @menu_items = Hash.new
+    
+    # file menu
+    @menu_items[:file] = Hash.new
+    @menu_items[:file][:project_new] = javax.swing.JMenuItem.new("New Project")
+    @menu_items[:file][:project_open] = javax.swing.JMenuItem.new("Open Project")
+    @menu_items[:file][:project_recent] = javax.swing.JMenu.new("Open Recent Project...")
+    @menu_items[:file][:separator1] = "-"
+    @menu_items[:file][:project_save] = javax.swing.JMenuItem.new("Save Project")
+    @menu_items[:file][:project_save].setAccelerator(javax.swing.KeyStroke::getKeyStroke(java.awt.event.KeyEvent::VK_S, java.awt.Toolkit::getDefaultToolkit.getMenuShortcutKeyMask))
+    @menu_items[:file][:project_save_as] = javax.swing.JMenuItem.new("Save Project As...")
+    
+    # recent file
+    preferences = self.user_preferences
+    begin
+      1.upto(4) do |i|
+        filename = preferences.get("recent#{i}", "")
+        unless filename.empty?
+          @recent_files.push(filename)
+        end
+      end
+    rescue NativeException
+      
+    end
+    populate_recent_files
+
+    # message menu
+    @menu_items[:message] = Hash.new
+    DebugManager.messages.each_pair do |key, value|
+      item = javax.swing.JCheckBoxMenuItem.new(key.to_s.capitalize)
+      item.setState(value)
+      @menu_items[:message][key] = item
+    end
+    
+    # window menu
+    @menu_items[:window] = Hash.new
+    #@menu_items[:window][:grammar] = javax.swing.JCheckBoxMenuItem.new("Grammar")
+    
+    
+    # add menu items to menu
+    @menus.each do |key, value|
+      @menu_items[key].each_value do |item|
+        if item == "-"
+          value.addSeparator
+        else
+          if item.kind_of?(javax.swing.JMenuItem)
+            item.addActionListener(self) 
+          end
+          value.add(item)
+        end
+      end
+      @menubar.add(value)
+    end
+        
+    self.setJMenuBar(@menubar)
+
+    # set layout manager
+    self.content_pane.setLayout(java.awt.BorderLayout.new)
+    self.content_pane.add(@dock, java.awt.BorderLayout::CENTER)
+
+    self.pack
+    
+    @grammar_pane.requestFocus
+    
+  end
+
+end

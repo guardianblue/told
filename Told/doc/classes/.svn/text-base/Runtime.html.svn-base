@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Runtime</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Runtime</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/runtime_rb.html">lib-ruby/runtime.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+The <a href="Runtime.html">Runtime</a> class holds all the runtime
+information of the designed language
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000029">active?</a></li>
+  <li><a href="#M000008">add_listener</a></li>
+  <li><a href="#M000016">create_components</a></li>
+  <li><a href="#M000019">create_parser</a></li>
+  <li><a href="#M000017">create_symbol_table</a></li>
+  <li><a href="#M000018">create_tokenizer</a></li>
+  <li><a href="#M000026">error</a></li>
+  <li><a href="#M000015">fire_breakpoint</a></li>
+  <li><a href="#M000013">fire_error</a></li>
+  <li><a href="#M000011">fire_finished</a></li>
+  <li><a href="#M000010">fire_started</a></li>
+  <li><a href="#M000014">fire_stepped</a></li>
+  <li><a href="#M000012">fire_terminated</a></li>
+  <li><a href="#M000007">new</a></li>
+  <li><a href="#M000021">parse</a></li>
+  <li><a href="#M000028">pause</a></li>
+  <li><a href="#M000009">remove_listener</a></li>
+  <li><a href="#M000027">run_step</a></li>
+  <li><a href="#M000025">started?</a></li>
+  <li><a href="#M000023">terminate</a></li>
+  <li><a href="#M000024">terminate!</a></li>
+  <li><a href="#M000020">tokenize</a></li>
+  <li><a href="#M000022">typecheck_and_evaluate</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>grammar</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>last_node</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>next_node</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>parser</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>phase</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>root_node</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>source</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>stepthrough</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>symbol_table</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>tokenizer</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>top_level_class</td>
+    <td class='attr-desc'></td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000007"></a><b>new</b>(grammar)
+  </div>
+  <div class="description">
+  <p>
+Initialize the runtime object
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000007_source')" id="l_M000007_source">show source</a> ]</p>
+  <div id="M000007_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 31</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">grammar</span>)
+    <span class="ruby-ivar">@grammar</span> = <span class="ruby-identifier">grammar</span>
+    <span class="ruby-ivar">@step_through</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-ivar">@error</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-ivar">@listeners</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000029"></a><b>active?</b>()
+  </div>
+  <div class="description">
+  <p>
+Return whether this runtime is active (not ended or terminated)
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000029_source')" id="l_M000029_source">show source</a> ]</p>
+  <div id="M000029_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 230</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">active?</span>
+    <span class="ruby-ivar">@phase</span> <span class="ruby-operator">!=</span> <span class="ruby-value str">&quot;ended&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000008"></a><b>add_listener</b>(object)
+  </div>
+  <div class="description">
+  <p>
+Add a listener
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000008_source')" id="l_M000008_source">show source</a> ]</p>
+  <div id="M000008_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 39</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">add_listener</span>(<span class="ruby-identifier">object</span>)
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">object</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000016"></a><b>create_components</b>()
+  </div>
+  <div class="description">
+  <p>
+Shorthand method for creating all the components
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000016_source')" id="l_M000016_source">show source</a> ]</p>
+  <div id="M000016_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 91</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_components</span>
+    <span class="ruby-identifier">create_tokenizer</span>
+    <span class="ruby-identifier">create_symbol_table</span>
+    <span class="ruby-identifier">create_parser</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000019"></a><b>create_parser</b>()
+  </div>
+  <div class="description">
+  <p>
+Generate the parser, and run generated codes from grammar
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000019_source')" id="l_M000019_source">show source</a> ]</p>
+  <div id="M000019_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 118</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_parser</span>
+    <span class="ruby-comment cmt">#puts @grammar.to_code</span>
+    <span class="ruby-ivar">@parser</span> = <span class="ruby-constant">Parser</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-identifier">symbol</span> = <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-identifier">current_code</span> = <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-keyword kw">begin</span>
+      <span class="ruby-ivar">@grammar</span>.<span class="ruby-identifier">codes</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">key</span>, <span class="ruby-identifier">code</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">symbol</span> = <span class="ruby-identifier">key</span>
+        <span class="ruby-identifier">current_code</span> = <span class="ruby-identifier">code</span>
+        <span class="ruby-ivar">@parser</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-identifier">code</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">ScriptError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+      <span class="ruby-comment cmt"># error in user-submitted code</span>
+      <span class="ruby-ivar">@error</span> = <span class="ruby-constant">SemanticError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">symbol</span>, <span class="ruby-identifier">current_code</span>, <span class="ruby-identifier">e</span>.<span class="ruby-identifier">message</span>)
+      <span class="ruby-identifier">raise</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000017"></a><b>create_symbol_table</b>(value = 0)
+  </div>
+  <div class="description">
+  <p>
+Create a symbol table for this runtime
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000017_source')" id="l_M000017_source">show source</a> ]</p>
+  <div id="M000017_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 98</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_symbol_table</span>(<span class="ruby-identifier">value</span> = <span class="ruby-value">0</span>)
+    <span class="ruby-ivar">@symbol_table</span> = <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-value">0</span>
+      <span class="ruby-constant">LexicalSymbolTable</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-keyword kw">when</span> <span class="ruby-value">1</span>
+      <span class="ruby-constant">DynamicSymbolTable</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-constant">LexicalSymbolTable</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000018"></a><b>create_tokenizer</b>()
+  </div>
+  <div class="description">
+  <p>
+Generate the tokenizer based on the literals defined in the grammar
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000018_source')" id="l_M000018_source">show source</a> ]</p>
+  <div id="M000018_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 110</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">create_tokenizer</span>
+    <span class="ruby-ivar">@tokenizer</span> = <span class="ruby-constant">Tokenizer</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-ivar">@grammar</span>.<span class="ruby-identifier">literals</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">literal</span><span class="ruby-operator">|</span>
+      <span class="ruby-ivar">@tokenizer</span>.<span class="ruby-identifier">add_rule</span>(<span class="ruby-identifier">literal</span>, <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">eval</span>(<span class="ruby-identifier">literal</span>)))
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000026"></a><b>error</b>()
+  </div>
+  <div class="description">
+  <p>
+Return false if there is not <a href="Runtime.html#M000026">error</a>,
+return the <a href="Runtime.html#M000026">error</a> object otherwise
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000026_source')" id="l_M000026_source">show source</a> ]</p>
+  <div id="M000026_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 205</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">error</span>
+    <span class="ruby-ivar">@error</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000015"></a><b>fire_breakpoint</b>()
+  </div>
+  <div class="description">
+  <p>
+Notify listeners if a breakpoint is initiated
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000015_source')" id="l_M000015_source">show source</a> ]</p>
+  <div id="M000015_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 84</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_breakpoint</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">runtime_breakpoint</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000013"></a><b>fire_error</b>()
+  </div>
+  <div class="description">
+  <p>
+Notify listeners if runtime <a href="Runtime.html#M000026">error</a>
+occurred
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000013_source')" id="l_M000013_source">show source</a> ]</p>
+  <div id="M000013_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 70</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_error</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">runtime_error</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000011"></a><b>fire_finished</b>()
+  </div>
+  <div class="description">
+  <p>
+Notify listeners if the runtime ended normally
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000011_source')" id="l_M000011_source">show source</a> ]</p>
+  <div id="M000011_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 56</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_finished</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">runtime_finished</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000010"></a><b>fire_started</b>()
+  </div>
+  <div class="description">
+  <p>
+Notify listeners when the runtime starts
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000010_source')" id="l_M000010_source">show source</a> ]</p>
+  <div id="M000010_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 49</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_started</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">runtime_started</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000014"></a><b>fire_stepped</b>()
+  </div>
+  <div class="description">
+  <p>
+Notify listeners if a stepthrough run has just finished
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000014_source')" id="l_M000014_source">show source</a> ]</p>
+  <div id="M000014_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 77</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_stepped</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">runtime_stepped</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000012"></a><b>fire_terminated</b>()
+  </div>
+  <div class="description">
+  <p>
+Notify listeners if the runtime is terminated by user
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000012_source')" id="l_M000012_source">show source</a> ]</p>
+  <div id="M000012_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 63</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">fire_terminated</span>
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">l</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">l</span>.<span class="ruby-identifier">runtime_terminated</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000021"></a><b>parse</b>()
+  </div>
+  <div class="description">
+  <p>
+Start the parsing stage
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000021_source')" id="l_M000021_source">show source</a> ]</p>
+  <div id="M000021_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 143</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse</span>
+    <span class="ruby-keyword kw">begin</span>
+      <span class="ruby-ivar">@phase</span> = <span class="ruby-value str">&quot;parse&quot;</span>
+      <span class="ruby-ivar">@root_node</span> = <span class="ruby-ivar">@parser</span>.<span class="ruby-identifier">instance_eval</span>(<span class="ruby-value str">&quot;Program.new&quot;</span>)
+      
+      <span class="ruby-ivar">@root_node</span>.<span class="ruby-identifier">symbol_table</span> = <span class="ruby-ivar">@symbol_table</span>
+      <span class="ruby-ivar">@root_node</span>.<span class="ruby-identifier">runtime</span> = <span class="ruby-keyword kw">self</span>
+      <span class="ruby-ivar">@root_node</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-ivar">@tokenizer</span>)
+      
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@tokenizer</span>.<span class="ruby-identifier">has_next?</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@tokenizer</span>.<span class="ruby-identifier">peek_next</span>, <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">remaining_token</span>)
+      <span class="ruby-keyword kw">end</span>
+      
+    <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">NameError</span>
+      <span class="ruby-comment cmt"># Program class is not defined</span>
+      <span class="ruby-ivar">@error</span> = <span class="ruby-constant">MainClassError</span>.<span class="ruby-identifier">new</span>
+      <span class="ruby-identifier">raise</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000028"></a><b>pause</b>(next_node, by_breakpoint = false)
+  </div>
+  <div class="description">
+  <p>
+Called by Language to notify the runtime the evaluator thread has just been
+stopped
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000028_source')" id="l_M000028_source">show source</a> ]</p>
+  <div id="M000028_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 219</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pause</span>(<span class="ruby-identifier">next_node</span>, <span class="ruby-identifier">by_breakpoint</span> = <span class="ruby-keyword kw">false</span>)
+    <span class="ruby-ivar">@last_node</span> = <span class="ruby-ivar">@next_node</span>
+    <span class="ruby-ivar">@next_node</span> = <span class="ruby-identifier">next_node</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">by_breakpoint</span>
+      <span class="ruby-identifier">fire_breakpoint</span>
+    <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@stepthrough</span>
+      <span class="ruby-identifier">fire_stepped</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000009"></a><b>remove_listener</b>(object)
+  </div>
+  <div class="description">
+  <p>
+Remove a listener
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000009_source')" id="l_M000009_source">show source</a> ]</p>
+  <div id="M000009_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 44</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">remove_listener</span>(<span class="ruby-identifier">object</span>)
+    <span class="ruby-ivar">@listeners</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-identifier">object</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000027"></a><b>run_step</b>()
+  </div>
+  <div class="description">
+  <p>
+Run the code by 1 syntax node
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000027_source')" id="l_M000027_source">show source</a> ]</p>
+  <div id="M000027_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 210</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">run_step</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@thread</span>.<span class="ruby-identifier">status</span>
+      <span class="ruby-ivar">@thread</span>.<span class="ruby-identifier">wakeup</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@phase</span> = <span class="ruby-value str">&quot;ended&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000025"></a><b>started?</b>()
+  </div>
+  <div class="description">
+  <p>
+Return whether the runtime has been started
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000025_source')" id="l_M000025_source">show source</a> ]</p>
+  <div id="M000025_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 200</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">started?</span>
+    <span class="ruby-ivar">@started</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000023"></a><b>terminate</b>()
+  </div>
+  <div class="description">
+  <p>
+Terminate the runtime
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000023_source')" id="l_M000023_source">show source</a> ]</p>
+  <div id="M000023_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 187</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">terminate</span>
+    <span class="ruby-identifier">terminate!</span>
+    <span class="ruby-identifier">fire_terminated</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000024"></a><b>terminate!</b>()
+  </div>
+  <div class="description">
+  <p>
+Terminate the runtime but do not notify listeners
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000024_source')" id="l_M000024_source">show source</a> ]</p>
+  <div id="M000024_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 193</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">terminate!</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@thread</span>
+      <span class="ruby-ivar">@thread</span>.<span class="ruby-identifier">kill</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000020"></a><b>tokenize</b>()
+  </div>
+  <div class="description">
+  <p>
+Start the <a href="Runtime.html#M000020">tokenize</a> stage
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000020_source')" id="l_M000020_source">show source</a> ]</p>
+  <div id="M000020_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 137</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">tokenize</span>
+    <span class="ruby-ivar">@phase</span> = <span class="ruby-value str">&quot;tokenize&quot;</span>
+    <span class="ruby-ivar">@tokenizer</span>.<span class="ruby-identifier">tokenize</span>(<span class="ruby-identifier">source</span>)    
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000022"></a><b>typecheck_and_evaluate</b>()
+  </div>
+  <div class="description">
+  <p>
+Start the evaluator stage
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000022_source')" id="l_M000022_source">show source</a> ]</p>
+  <div id="M000022_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/runtime.rb, line 164</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">typecheck_and_evaluate</span>
+    <span class="ruby-ivar">@last_node</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-ivar">@next_node</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-ivar">@thread</span> = <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">new</span> {
+      <span class="ruby-keyword kw">begin</span>
+        <span class="ruby-identifier">fire_started</span>
+        <span class="ruby-ivar">@phase</span> = <span class="ruby-value str">&quot;type-checking&quot;</span>
+        <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-value str">&quot;Enter phase: Type checking&quot;</span>)
+        <span class="ruby-ivar">@root_node</span>.<span class="ruby-identifier">typecheck</span>
+        <span class="ruby-ivar">@phase</span> = <span class="ruby-value str">&quot;evaluation&quot;</span>
+        <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-value str">&quot;Enter phase: Evaluation&quot;</span>)
+        <span class="ruby-ivar">@root_node</span>.<span class="ruby-identifier">evaluate</span>
+      <span class="ruby-keyword kw">rescue</span> <span class="ruby-constant">StandardError</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">e</span>
+        <span class="ruby-ivar">@error</span> = <span class="ruby-constant">EvaluatorError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@grammar</span>, <span class="ruby-ivar">@phase</span>, <span class="ruby-ivar">@next_node</span>, <span class="ruby-node">&quot;#{e.backtrace.first}&quot;</span>)
+        <span class="ruby-identifier">fire_error</span>
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-ivar">@phase</span> = <span class="ruby-value str">&quot;ended&quot;</span>
+      <span class="ruby-identifier">fire_finished</span>
+      <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">exit</span>
+    }
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

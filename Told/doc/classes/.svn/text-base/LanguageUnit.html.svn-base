@@ -1,0 +1,906 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: LanguageUnit</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />LanguageUnit</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/parser/language_unit_rb.html">lib-ruby/parser/language_unit.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Superclass for all parsable unit of the language
+</p>
+<p>
+When you click on a semantic node in the Project Explorer (left panel), The
+Semantic Panel will be opened. There you can edit the evaluation and
+type-checking methods of that node.
+</p>
+<p>
+IMPORTANT NOTE: the first call <tt>super</tt> (in both <tt><a
+href="LanguageUnit.html#M000115">evaluate</a></tt> and <tt><a
+href="LanguageUnit.html#M000116">typecheck</a></tt> methods) should not be
+modified. It is responsible for IDE interaction. If you delete this line,
+features such as the <a href="LanguageUnit.html#M000114">parse</a> tree,
+stepthrough will be broken
+</p>
+<h2>Evaluation</h2>
+<p>
+Define <tt><a href="LanguageUnit.html#M000115">evaluate</a></tt> instance
+method to provide the result of evaluation
+</p>
+<pre>
+  def evaluate
+    super
+    expressions[1].evaluate + expressions[3].evaluate
+  end
+</pre>
+<h2>Type-checking</h2>
+<p>
+Define the <tt>type_check</tt> instance method to provide the type of this
+element, or raise <a href="TypecheckError.html">TypecheckError</a> if types
+of subsequent expressions does not agree.
+</p>
+<pre>
+  def type_check
+    super
+    if expressions[1].type_check == &quot;integer&quot; and expressions[3].type_check == &quot;integer&quot;
+      &quot;integer&quot;
+    else
+      raise TypecheckError, TypecheckError.concat_failed(expressions[1].type_check, expressions[3].type_check)
+    end
+  end
+</pre>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000125">breakpoint</a></li>
+  <li><a href="#M000122">content</a></li>
+  <li><a href="#M000115">evaluate</a></li>
+  <li><a href="#M000117">evaluate_all</a></li>
+  <li><a href="#M000118">evaluate_first</a></li>
+  <li><a href="#M000113">init_expecting</a></li>
+  <li><a href="#M000102">language_class</a></li>
+  <li><a href="#M000103">language_instance</a></li>
+  <li><a href="#M000121">list_expressions</a></li>
+  <li><a href="#M000112">new</a></li>
+  <li><a href="#M000111">parent</a></li>
+  <li><a href="#M000110">parent=</a></li>
+  <li><a href="#M000114">parse</a></li>
+  <li><a href="#M000127">pass_control</a></li>
+  <li><a href="#M000108">pattern</a></li>
+  <li><a href="#M000107">runtime</a></li>
+  <li><a href="#M000106">runtime=</a></li>
+  <li><a href="#M000105">symbol_table</a></li>
+  <li><a href="#M000104">symbol_table=</a></li>
+  <li><a href="#M000109">test</a></li>
+  <li><a href="#M000126">to_s</a></li>
+  <li><a href="#M000124">to_s</a></li>
+  <li><a href="#M000123">type_label</a></li>
+  <li><a href="#M000116">typecheck</a></li>
+  <li><a href="#M000119">typecheck_all</a></li>
+  <li><a href="#M000120">typecheck_first</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>expecting</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>expressions</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>properties</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>root</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>runtime</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[RW]
+    </td>
+    <td class='attr-name'>token</td>
+    <td class='attr-desc'></td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000102"></a><b>language_class</b>()
+  </div>
+  <div class="description">
+  <p>
+Determine whether this class is sub-class of <a
+href="LanguageUnit.html">LanguageUnit</a> or not
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000102_source')" id="l_M000102_source">show source</a> ]</p>
+  <div id="M000102_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 52</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">language_class</span>
+    <span class="ruby-keyword kw">true</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000112"></a><b>new</b>()
+  </div>
+  <div class="description">
+  <p>
+Instansiate this <a href="LanguageUnit.html">LanguageUnit</a>.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000112_source')" id="l_M000112_source">show source</a> ]</p>
+  <div id="M000112_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 122</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expressions</span> = []
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expecting</span> = <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">init_expecting</span>
+    <span class="ruby-ivar">@properties</span> = <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-ivar">@parent</span> = <span class="ruby-keyword kw">nil</span>
+    <span class="ruby-ivar">@root</span> = <span class="ruby-keyword kw">self</span>
+    <span class="ruby-ivar">@paused</span> = <span class="ruby-keyword kw">false</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000108"></a><b>pattern</b>()
+  </div>
+  <div class="description">
+  <p>
+Pattern to be used in the <tt><a
+href="LanguageUnit.html#M000109">test</a></tt> method
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000108_source')" id="l_M000108_source">show source</a> ]</p>
+  <div id="M000108_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 98</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pattern</span>
+    <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">''</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000109"></a><b>test</b>(token)
+  </div>
+  <div class="description">
+  <p>
+Test if a token could be (the start of) this <a
+href="LanguageUnit.html">LanguageUnit</a>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000109_source')" id="l_M000109_source">show source</a> ]</p>
+  <div id="M000109_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 103</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">test</span>(<span class="ruby-identifier">token</span>)
+    <span class="ruby-identifier">token</span>.<span class="ruby-identifier">content</span> <span class="ruby-operator">=~</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">pattern</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000126"></a><b>to_s</b>()
+  </div>
+  <div class="description">
+  <p>
+Class method to return the effective part of class name removing the
+namespace part due to running the parser on an object-level context
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000126_source')" id="l_M000126_source">show source</a> ]</p>
+  <div id="M000126_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 317</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">to_s</span>
+    <span class="ruby-keyword kw">super</span>.<span class="ruby-identifier">sub</span>(<span class="ruby-regexp re">/.*?::/</span>, <span class="ruby-value str">&quot;&quot;</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000125"></a><b>breakpoint</b>()
+  </div>
+  <div class="description">
+  <p>
+Initiate a <a href="LanguageUnit.html#M000125">breakpoint</a> during run
+mode. You can then stepthrough the code or continue until end of program.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000125_source')" id="l_M000125_source">show source</a> ]</p>
+  <div id="M000125_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 311</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">breakpoint</span>
+    <span class="ruby-identifier">pass_control</span>(<span class="ruby-keyword kw">true</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000122"></a><b>content</b>()
+  </div>
+  <div class="description">
+  <p>
+Provides the string to be shown in the <a
+href="LanguageUnit.html#M000114">parse</a> tree.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000122_source')" id="l_M000122_source">show source</a> ]</p>
+  <div id="M000122_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 296</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">content</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000115"></a><b>evaluate</b>(context = {})
+  </div>
+  <div class="description">
+  <p>
+Evaluates this language unit, provides linkage to IDE features Edit this
+method in the Semantic Panel to provide the result as this node is being
+evaluated
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000115_source')" id="l_M000115_source">show source</a> ]</p>
+  <div id="M000115_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 219</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">context</span> = {})
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">runtime</span>.<span class="ruby-identifier">stepthrough</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@paused</span>
+        <span class="ruby-comment cmt"># control is resumed from the runtime, do nothing and let subclasses do their jobs</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-comment cmt"># pass the control back to runtime, until the user press &quot;step through&quot; again</span>
+        <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-node">&quot;Evaluating #{to_s}&quot;</span>)
+        <span class="ruby-identifier">pass_control</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-comment cmt"># even if it is not stepthrough, pass the thread to avoid infinite loop (terminated by gui)</span>
+      <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-node">&quot;Evaluating #{to_s}&quot;</span>)
+      <span class="ruby-identifier">runtime</span>.<span class="ruby-identifier">pause</span>(<span class="ruby-keyword kw">self</span>)
+      <span class="ruby-comment cmt">#Thread.pass</span>
+    <span class="ruby-keyword kw">end</span>
+    
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000117"></a><b>evaluate_all</b>(context = {})
+  </div>
+  <div class="description">
+  <p>
+Short hand method for evaluating all children expressions one by one
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000117_source')" id="l_M000117_source">show source</a> ]</p>
+  <div id="M000117_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 257</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_all</span>(<span class="ruby-identifier">context</span> = {})
+    <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">expr</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">LanguageUnit</span>
+        <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">context</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000118"></a><b>evaluate_first</b>(context ={})
+  </div>
+  <div class="description">
+  <p>
+Short hand method for evaluating the first child expressions Useful for <a
+href="MultiUnit.html">MultiUnit</a>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000118_source')" id="l_M000118_source">show source</a> ]</p>
+  <div id="M000118_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 267</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">evaluate_first</span>(<span class="ruby-identifier">context</span> ={})
+    <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">evaluate</span>(<span class="ruby-identifier">context</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000113"></a><b>init_expecting</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns the initial <tt>expecting</tt> array Used in the parsing stage
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000113_source')" id="l_M000113_source">show source</a> ]</p>
+  <div id="M000113_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 133</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">init_expecting</span>
+    [<span class="ruby-constant">Expectation</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">pattern</span>)]
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000103"></a><b>language_instance</b>()
+  </div>
+  <div class="description">
+  <p>
+Determine whether this object is an instance of <a
+href="LanguageUnit.html">LanguageUnit</a>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000103_source')" id="l_M000103_source">show source</a> ]</p>
+  <div id="M000103_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 57</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">language_instance</span>
+    <span class="ruby-keyword kw">true</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000121"></a><b>list_expressions</b>()
+  </div>
+  <div class="description">
+  <p>
+provide a human-readable list of contents in the expressions array
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000121_source')" id="l_M000121_source">show source</a> ]</p>
+  <div id="M000121_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 288</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">list_expressions</span>
+    <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-node">&quot;Listing expressions &lt;#{self.to_s}&gt;&quot;</span>)
+    <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">each_with_index</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">expr</span>, <span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-node">&quot; - expressions[#{i}]: #{expr.content}&quot;</span>)
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000111"></a><b>parent</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000111_source')" id="l_M000111_source">show source</a> ]</p>
+  <div id="M000111_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 117</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parent</span>
+    <span class="ruby-ivar">@parent</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000110"></a><b>parent=</b>(value)
+  </div>
+  <div class="description">
+  <p>
+Parent expression. If this is the root node of the AST, the value will be
+nil
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000110_source')" id="l_M000110_source">show source</a> ]</p>
+  <div id="M000110_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 108</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parent=</span>(<span class="ruby-identifier">value</span>)
+    <span class="ruby-ivar">@parent</span> = <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>
+      <span class="ruby-ivar">@root</span> = <span class="ruby-ivar">@parent</span>.<span class="ruby-identifier">root</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@root</span> = <span class="ruby-keyword kw">self</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000114"></a><b>parse</b>(tokenizer)
+  </div>
+  <div class="description">
+  <p>
+Parse this language unit will the given tokenizer
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000114_source')" id="l_M000114_source">show source</a> ]</p>
+  <div id="M000114_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 138</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">tokenizer</span>)
+
+    <span class="ruby-comment cmt"># terminate condition</span>
+    <span class="ruby-identifier">terminate</span> = (<span class="ruby-identifier">expecting</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-keyword kw">or</span> (<span class="ruby-keyword kw">not</span> <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">has_next?</span>))
+    <span class="ruby-identifier">next_expecting</span> = <span class="ruby-identifier">expecting</span>.<span class="ruby-identifier">shift</span>
+  
+    <span class="ruby-comment cmt"># Parse until terminate condition fulfilled</span>
+    <span class="ruby-keyword kw">while</span> <span class="ruby-keyword kw">not</span> <span class="ruby-identifier">terminate</span> <span class="ruby-keyword kw">do</span>
+      
+      <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;#{to_s} Expecting [#{expecting.collect{|item| item.to_s}.join(&quot;, &quot;)}] \n&gt;&gt; Current: [&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;]&quot;</span>)
+      <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-value str">&quot;&gt;&gt; Next token: [&quot;</span><span class="ruby-operator">+</span> <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>.<span class="ruby-identifier">content</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;]&quot;</span>)
+      
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">Regexp</span>
+        
+        <span class="ruby-comment cmt"># If it is an explicit regular expression, parse and continue</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>.<span class="ruby-identifier">content</span> <span class="ruby-operator">=~</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>
+          <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;&lt;#{to_s}&gt; Regexp: matched&quot;</span>)
+          <span class="ruby-comment cmt"># push this token  to expressions array</span>
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">next</span>)
+        
+          <span class="ruby-comment cmt"># Consume the next_expecting token if its modifier is once or optional</span>
+          <span class="ruby-keyword kw">if</span> [<span class="ruby-identifier">:once</span>, <span class="ruby-identifier">:optional</span>].<span class="ruby-identifier">include?</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">modifier</span>
+            <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">consume</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;&lt;#{to_s}&gt; Regexp: mismatched&quot;</span>)
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">modifier</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:once</span>
+            <span class="ruby-comment cmt"># Token mismatched, raises ParseError</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>, <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">mismatched</span>(<span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>, <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>.<span class="ruby-identifier">content</span>))
+          <span class="ruby-keyword kw">else</span> 
+            <span class="ruby-comment cmt"># This unit is optional, or cannot be further expanded. Consume.</span>
+            <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">consume</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">elsif</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">Class</span>) <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>.<span class="ruby-identifier">new</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">LanguageUnit</span>)
+        
+        <span class="ruby-comment cmt"># Test if the next token agrees with this language unit</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>.<span class="ruby-identifier">test</span>(<span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>)
+          <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;&lt;#{to_s}&gt; #{next_expecting.value.to_s}: matched&quot;</span>)
+          <span class="ruby-comment cmt"># Instanstiate the language unit and store it in +expressions+ array</span>
+          <span class="ruby-identifier">expression</span> = <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>.<span class="ruby-identifier">new</span>
+          <span class="ruby-identifier">expression</span>.<span class="ruby-identifier">parent</span> = <span class="ruby-keyword kw">self</span>
+          <span class="ruby-identifier">expression</span>.<span class="ruby-identifier">token</span> = <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>
+          <span class="ruby-identifier">expression</span>.<span class="ruby-identifier">parse</span>(<span class="ruby-identifier">tokenizer</span>)
+          <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">expression</span>)
+          <span class="ruby-keyword kw">if</span> [<span class="ruby-identifier">:once</span>, <span class="ruby-identifier">:optional</span>].<span class="ruby-identifier">include?</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">modifier</span>
+            <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">consume</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;&lt;#{to_s}&gt; #{next_expecting.value.to_s}: mismatched&quot;</span>)
+          <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">modifier</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:once</span>
+            <span class="ruby-comment cmt"># Token mismatched, raises ParseError</span>
+            <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>, <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">mismatched</span>(<span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>, <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>.<span class="ruby-identifier">content</span>)) 
+          <span class="ruby-keyword kw">else</span>
+            <span class="ruby-comment cmt"># This unit is optional, or cannot be further expanded. Consume.</span>
+            <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">consume</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-comment cmt"># Unknown type, raise exception</span>
+        <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">peek_next</span>, <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">unknown_type</span>(<span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value</span>))
+      <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># end-if</span>
+    
+      <span class="ruby-comment cmt"># Get next expecting if the current one is consumed</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">consumed?</span>
+        <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:parser</span>, <span class="ruby-node">&quot;&lt;#{to_s}&gt; Consumed [&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">value_label</span> <span class="ruby-operator">+</span> <span class="ruby-value str">&quot;]&quot;</span>)
+        <span class="ruby-identifier">next_expecting</span> = <span class="ruby-identifier">expecting</span>.<span class="ruby-identifier">shift</span>
+      <span class="ruby-keyword kw">end</span>
+    
+      <span class="ruby-identifier">terminate</span> = ((<span class="ruby-keyword kw">not</span> <span class="ruby-identifier">next_expecting</span>) <span class="ruby-keyword kw">or</span> (<span class="ruby-keyword kw">not</span> <span class="ruby-identifier">tokenizer</span>.<span class="ruby-identifier">has_next?</span>))
+    
+    <span class="ruby-keyword kw">end</span>
+  
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">next_expecting</span> <span class="ruby-keyword kw">and</span> <span class="ruby-identifier">next_expecting</span>.<span class="ruby-identifier">modifier</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:once</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">new</span>(<span class="ruby-keyword kw">nil</span>, <span class="ruby-constant">ParseError</span>.<span class="ruby-identifier">no_more_tokens</span>(<span class="ruby-identifier">next_expecting</span>))
+    <span class="ruby-keyword kw">end</span>  
+  
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000107"></a><b>runtime</b>()
+  </div>
+  <div class="description">
+  <p>
+Retrieve <a href="LanguageUnit.html#M000107">runtime</a> environment object
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000107_source')" id="l_M000107_source">show source</a> ]</p>
+  <div id="M000107_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 89</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">runtime</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@parent</span>
+      <span class="ruby-identifier">root</span>.<span class="ruby-identifier">runtime</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@runtime</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000106"></a><b>runtime=</b>(value)
+  </div>
+  <div class="description">
+  <p>
+Set the link to the <a href="LanguageUnit.html#M000107">runtime</a>
+environment object
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000106_source')" id="l_M000106_source">show source</a> ]</p>
+  <div id="M000106_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 80</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">runtime=</span>(<span class="ruby-identifier">value</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parent</span>
+      <span class="ruby-identifier">root</span>.<span class="ruby-identifier">runtime</span> = <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@runtime</span> = <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000105"></a><b>symbol_table</b>()
+  </div>
+  <div class="description">
+  <p>
+Retrieve the symbol table object
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000105_source')" id="l_M000105_source">show source</a> ]</p>
+  <div id="M000105_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 71</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">symbol_table</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@parent</span>
+      <span class="ruby-identifier">root</span>.<span class="ruby-identifier">symbol_table</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@symbol_table</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000104"></a><b>symbol_table=</b>(value)
+  </div>
+  <div class="description">
+  <p>
+Set the symbol table object for the language unit
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000104_source')" id="l_M000104_source">show source</a> ]</p>
+  <div id="M000104_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 62</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">symbol_table=</span>(<span class="ruby-identifier">value</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">parent</span>
+      <span class="ruby-identifier">root</span>.<span class="ruby-identifier">symbol_table</span> = <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@symbol_table</span> = <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000124"></a><b>to_s</b>()
+  </div>
+  <div class="description">
+  <p>
+Alias for <tt><a href="LanguageUnit.html#M000122">content</a></tt>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000124_source')" id="l_M000124_source">show source</a> ]</p>
+  <div id="M000124_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 306</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_s</span>
+    <span class="ruby-identifier">content</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000123"></a><b>type_label</b>()
+  </div>
+  <div class="description">
+  <p>
+Alias for <tt><a href="LanguageUnit.html#M000122">content</a></tt>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000123_source')" id="l_M000123_source">show source</a> ]</p>
+  <div id="M000123_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 301</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">type_label</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">class</span>.<span class="ruby-identifier">to_s</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000116"></a><b>typecheck</b>(content = {})
+  </div>
+  <div class="description">
+  <p>
+Check the type of this language unit, provides linkage to IDE features Edit
+this method in the Semantic Panel to provide the result of checking the
+type of this language unit
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000116_source')" id="l_M000116_source">show source</a> ]</p>
+  <div id="M000116_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 239</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">typecheck</span>(<span class="ruby-identifier">content</span> = {})
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">runtime</span>.<span class="ruby-identifier">stepthrough</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@paused</span>
+        <span class="ruby-comment cmt"># control is resumed from the runtime, do nothing and let subclasses do their jobs</span>
+      <span class="ruby-keyword kw">else</span>
+        <span class="ruby-comment cmt"># pass the control back to runtime, until the user press &quot;step through&quot; again</span>
+        <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-node">&quot;Type checking #{to_s}&quot;</span>)
+        <span class="ruby-identifier">pass_control</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-comment cmt"># even if it is not stepthrough, pass the thread to avoid infinite loop (terminated by gui)</span>
+      <span class="ruby-identifier">level_debug</span>(<span class="ruby-identifier">:runtime</span>, <span class="ruby-node">&quot;Type checking #{to_s}&quot;</span>)
+      <span class="ruby-identifier">runtime</span>.<span class="ruby-identifier">pause</span>(<span class="ruby-keyword kw">self</span>)
+      <span class="ruby-comment cmt">#Thread.pass</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000119"></a><b>typecheck_all</b>(context = {})
+  </div>
+  <div class="description">
+  <p>
+Short hand method for type-checking all children expressions one by one
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000119_source')" id="l_M000119_source">show source</a> ]</p>
+  <div id="M000119_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 272</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">typecheck_all</span>(<span class="ruby-identifier">context</span> = {})
+    <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">expr</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">LanguageUnit</span>
+        
+        <span class="ruby-identifier">expr</span>.<span class="ruby-identifier">typecheck</span>(<span class="ruby-identifier">context</span>)
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000120"></a><b>typecheck_first</b>(context = {})
+  </div>
+  <div class="description">
+  <p>
+Short hand method for type-checking the first child expressions Useful for
+<a href="MultiUnit.html">MultiUnit</a>
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000120_source')" id="l_M000120_source">show source</a> ]</p>
+  <div id="M000120_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 283</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">typecheck_first</span>(<span class="ruby-identifier">context</span> = {})
+    <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">first</span>.<span class="ruby-identifier">typecheck</span>(<span class="ruby-identifier">context</span>)
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Protected Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000127"></a><b>pass_control</b>(by_breakpoint = false)
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000127_source')" id="l_M000127_source">show source</a> ]</p>
+  <div id="M000127_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/language_unit.rb, line 322</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">pass_control</span>(<span class="ruby-identifier">by_breakpoint</span> = <span class="ruby-keyword kw">false</span>)
+    <span class="ruby-ivar">@paused</span> = <span class="ruby-keyword kw">true</span>
+    <span class="ruby-identifier">runtime</span>.<span class="ruby-identifier">pause</span>(<span class="ruby-keyword kw">self</span>, <span class="ruby-identifier">by_breakpoint</span>)
+    <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">stop</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

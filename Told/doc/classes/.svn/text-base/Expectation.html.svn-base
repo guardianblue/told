@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: Expectation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />Expectation</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/parser/expectation_rb.html">lib-ruby/parser/expectation.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+Object
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+An <a href="Expectation.html">Expectation</a> object defines an element in
+the &#8216;expecting&#8217; array of a language unit
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000071">consume</a></li>
+  <li><a href="#M000073">consumed?</a></li>
+  <li><a href="#M000075">label</a></li>
+  <li><a href="#M000077">modifier_label</a></li>
+  <li><a href="#M000070">new</a></li>
+  <li><a href="#M000072">reset</a></li>
+  <li><a href="#M000074">to_s</a></li>
+  <li><a href="#M000076">value_label</a></li>
+  </ul>
+
+
+
+
+
+  <div class="sectiontitle">Attributes</div>
+  <table border='0' cellpadding='5'>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>modifier</td>
+    <td class='attr-desc'></td>
+  </tr>
+  <tr valign='top'>
+    <td class='attr-rw'>
+[R]
+    </td>
+    <td class='attr-name'>value</td>
+    <td class='attr-desc'></td>
+  </tr>
+  </table>
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000070"></a><b>new</b>(value, modifier = :once)
+  </div>
+  <div class="description">
+  <p>
+Defines a <a href="Expectation.html#M000070">new</a> <a
+href="Expectation.html">Expectation</a>.
+</p>
+<dl>
+<dt>value</dt><dd>The language unit to expect. Can be a String or any subclass of <a
+href="LanguageUnit.html">LanguageUnit</a>
+
+</dd>
+<dt>modifier</dt><dd>The modifier of this <a href="Expectation.html">Expectation</a>. Options
+are:
+
+</dd>
+</dl>
+<table>
+<tr><td valign="top"><tt>:once</tt>:</td><td>The parser would expect this <a href="Expectation.html">Expectation</a> to
+run exactly one time. (Default)
+
+</td></tr>
+<tr><td valign="top"><tt>:optional</tt>:</td><td>The parser would continue to next expecting <a
+href="LanguageUnit.html">LanguageUnit</a> if this rule is not matched.
+
+</td></tr>
+<tr><td valign="top"><tt>:kleene</tt>:</td><td>The parser would repeat this <a href="Expectation.html">Expectation</a> as
+many times as possible (kleene expansion). After that, continue with next
+<a href="Expectation.html">Expectation</a>.
+
+</td></tr>
+</table>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000070_source')" id="l_M000070_source">show source</a> ]</p>
+  <div id="M000070_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 13</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">value</span>, <span class="ruby-identifier">modifier</span> = <span class="ruby-identifier">:once</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span> <span class="ruby-constant">String</span>
+      <span class="ruby-ivar">@value</span> = <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">new</span>(<span class="ruby-value str">'^'</span> <span class="ruby-operator">+</span> <span class="ruby-constant">Regexp</span>.<span class="ruby-identifier">escape</span>(<span class="ruby-identifier">value</span>) <span class="ruby-operator">+</span> <span class="ruby-value str">'$'</span>)
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@value</span> =  <span class="ruby-identifier">value</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@modifier</span> = <span class="ruby-identifier">modifier</span>
+    <span class="ruby-ivar">@consumed</span> = <span class="ruby-keyword kw">false</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000071"></a><b>consume</b>()
+  </div>
+  <div class="description">
+  <p>
+Consume this expectation. The parser will continue on next expectation.
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000071_source')" id="l_M000071_source">show source</a> ]</p>
+  <div id="M000071_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 24</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">consume</span>
+    <span class="ruby-ivar">@consumed</span> = <span class="ruby-keyword kw">true</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000073"></a><b>consumed?</b>()
+  </div>
+  <div class="description">
+  <p>
+Returns whether this expectation is consumed or not
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000073_source')" id="l_M000073_source">show source</a> ]</p>
+  <div id="M000073_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 34</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">consumed?</span>
+    <span class="ruby-ivar">@consumed</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000075"></a><b>label</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000075_source')" id="l_M000075_source">show source</a> ]</p>
+  <div id="M000075_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 42</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">label</span>
+    <span class="ruby-node">&quot;#{value_label}#{modifier_label}&quot;</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000077"></a><b>modifier_label</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000077_source')" id="l_M000077_source">show source</a> ]</p>
+  <div id="M000077_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 54</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">modifier_label</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">modifier</span> <span class="ruby-operator">!=</span> <span class="ruby-identifier">:once</span>
+      <span class="ruby-node">&quot; #{modifier.to_s}&quot;</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000072"></a><b>reset</b>()
+  </div>
+  <div class="description">
+  <p>
+Reset this expectation to its initial state
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000072_source')" id="l_M000072_source">show source</a> ]</p>
+  <div id="M000072_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 29</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">reset</span>
+    <span class="ruby-ivar">@consumed</span> = <span class="ruby-keyword kw">false</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000074"></a><b>to_s</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000074_source')" id="l_M000074_source">show source</a> ]</p>
+  <div id="M000074_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 38</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_s</span>
+    <span class="ruby-identifier">label</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000076"></a><b>value_label</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000076_source')" id="l_M000076_source">show source</a> ]</p>
+  <div id="M000076_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/expectation.rb, line 46</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">value_label</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">value</span>.<span class="ruby-identifier">kind_of?</span>(<span class="ruby-constant">Regexp</span>)
+      <span class="ruby-node">&quot;/#{value.source}/&quot;</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-identifier">value</span>.<span class="ruby-identifier">to_s</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>

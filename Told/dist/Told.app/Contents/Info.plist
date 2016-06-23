@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+<key>CFBundleName</key>
+<string>Told IDE</string>
+<key>CFBundleShortVersionString</key>
+<string>0.7.3</string>
+<key>CFBundleGetInfoString</key>
+<string>Teaching-Oriented Language Development Environment, copyright 2008</string>
+<key>CFBundleAllowMixedLocalizations</key>
+<string>false</string>
+<key>CFBundleInfoDictionaryVersion</key>
+<string>6.0</string>
+<key>CFBundleExecutable</key>
+<string>JavaApplicationStub</string>
+<key>CFBundleDevelopmentRegion</key>
+<string>English</string>
+<key>CFBundlePackageType</key>
+<string>APPL</string>
+<key>CFBundleSignature</key>
+<string>????</string>
+<key>CFBundleVersion</key>
+<string>120</string>
+<key>CFBundleIconFile</key>
+<string>GenericJavaApp.icns</string>
+<key>CFBundleIdentifier</key>
+<string>hk.edu.cuhk.cse.Told</string>
+<key>Java</key>
+<dict>
+<key>MainClass</key>
+<string>hk.edu.cuhk.cse.told.Main</string>
+<key>JVMVersion</key>
+<string>1.5*</string>
+<key>ClassPath</key>
+<array>
+<string>$JAVAROOT/told.jar</string>
+</array>
+<key>Properties</key>
+<dict>
+<key>apple.laf.useScreenMenuBar</key>
+<string>true</string>
+<key>apple.awt.showGrowBox</key>
+<string>false</string>
+</dict>
+</dict>
+</dict>
+</plist>

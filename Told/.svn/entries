@@ -1,0 +1,105 @@
+10
+
+dir
+120
+svn+ssh://brian@wepher.com/told/trunk
+svn+ssh://brian@wepher.com/told
+
+
+
+2009-10-20T16:29:43.032439Z
+120
+brian
+has-props
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+9193094c-8c95-44d0-ac0a-5e7087aa2aa6
+
+.project
+file
+
+
+
+
+2008-02-20T06:52:54.000000Z
+b9a104cf36ed2af211a8ec9f360dc046
+2008-02-20T07:41:37.976017Z
+18
+brian
+
+build.xml
+file
+
+
+
+
+2009-10-20T16:21:23.000000Z
+77340286b26b7513202315c11b8d448e
+2009-10-20T16:29:43.032439Z
+120
+brian
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4615
+
+create_doc.sh
+file
+
+
+
+
+2008-10-12T18:30:51.000000Z
+276bae95ab92a65c517057877cf57a4f
+2008-10-12T18:59:20.512287Z
+103
+brian
+has-props
+
+doc
+dir
+
+images
+dir
+
+lib-java
+dir
+
+lib-ruby
+dir
+
+macos
+dir
+
+src
+dir
+

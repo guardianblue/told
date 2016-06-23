@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Class: EvaluatorError</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+
+    <script language="JavaScript" type="text/javascript">
+    // <![CDATA[
+
+        function toggleSource( id )
+        {
+          var elem
+          var link
+
+          if( document.getElementById )
+          {
+            elem = document.getElementById( id )
+            link = document.getElementById( "l_" + id )
+          }
+          else if ( document.all )
+          {
+            elem = eval( "document.all." + id )
+            link = eval( "document.all.l_" + id )
+          }
+          else
+            return false;
+
+          if( elem.style.display == "block" )
+          {
+            elem.style.display = "none"
+            link.innerHTML = "show source"
+          }
+          else
+          {
+            elem.style.display = "block"
+            link.innerHTML = "hide source"
+          }
+        }
+
+        function openCode( url )
+        {
+          window.open( url, "SOURCE_CODE", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=480,width=750" ).focus();
+        }
+      // ]]>
+    </script>
+  </head>
+
+  <body>
+  <table width="100%" border='0' cellpadding='0' cellspacing='0' class='banner'><tr>
+  <td class="file-title"><span class="file-title-prefix">Class</span><br />EvaluatorError</td>
+  <td align="right">
+    <table cellspacing="0" cellpadding="2">
+      <tr valign="top">
+        <td>In:</td>
+        <td>
+<a href="../files/lib-ruby/parser/evaluator_error_rb.html">lib-ruby/parser/evaluator_error.rb</a>
+        </td>
+      </tr>
+    <tr>
+      <td>Parent:</td>
+      <td>
+RuntimeError
+     </td>
+   </tr>
+         </table>
+        </td>
+        </tr>
+      </table>
+ <!-- banner header -->
+
+  <div id="bodyContent">
+      <div id="content">
+
+  <div class="description"><p>
+Provides error information for errors produced in evaluation stage. As the
+error is very likely due to user-definied codes, this class will try to
+locate the source file and output a formatted version of error information.
+</p>
+</div>
+
+
+
+  <div class="sectiontitle">Methods</div>
+  <ul>
+  <li><a href="#M000033">new</a></li>
+  <li><a href="#M000035">problem_code_with_number</a></li>
+  <li><a href="#M000036">process_error</a></li>
+  <li><a href="#M000034">to_s</a></li>
+  </ul>
+
+
+
+
+
+
+<div class="sectiontitle">Public Class methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000033"></a><b>new</b>(grammar, phase, node, backtrace)
+  </div>
+  <div class="description">
+  <p>
+Initialize an <a href="EvaluatorError.html">EvaluatorError</a> object
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000033_source')" id="l_M000033_source">show source</a> ]</p>
+  <div id="M000033_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/evaluator_error.rb, line 7</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">grammar</span>, <span class="ruby-identifier">phase</span>, <span class="ruby-identifier">node</span>, <span class="ruby-identifier">backtrace</span>)
+    <span class="ruby-ivar">@grammar</span> = <span class="ruby-identifier">grammar</span>
+    <span class="ruby-ivar">@backtrace</span> = <span class="ruby-identifier">backtrace</span>
+    <span class="ruby-ivar">@phase</span> = <span class="ruby-identifier">phase</span>
+    <span class="ruby-ivar">@node</span> = <span class="ruby-identifier">node</span>.<span class="ruby-identifier">to_s</span>
+    <span class="ruby-ivar">@node_symbol</span> = <span class="ruby-ivar">@grammar</span>.<span class="ruby-identifier">class_name_to_symbol</span>(<span class="ruby-ivar">@node</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@node_symbol</span>
+      <span class="ruby-ivar">@code</span> = []
+      <span class="ruby-ivar">@grammar</span>.<span class="ruby-identifier">symbol_code</span>(<span class="ruby-ivar">@node_symbol</span>).<span class="ruby-identifier">each_line</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+        <span class="ruby-ivar">@code</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">line</span>)
+      <span class="ruby-keyword kw">end</span>
+      <span class="ruby-identifier">process_error</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@information</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">end</span>
+    
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Public Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000035"></a><b>problem_code_with_number</b>(proximity = 3)
+  </div>
+  <div class="description">
+  <p>
+Return a formated version of the buggy code with line numbers
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000035_source')" id="l_M000035_source">show source</a> ]</p>
+  <div id="M000035_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/evaluator_error.rb, line 35</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">problem_code_with_number</span>(<span class="ruby-identifier">proximity</span> = <span class="ruby-value">3</span>)
+    <span class="ruby-identifier">first_line</span> = <span class="ruby-ivar">@line_number</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">proximity</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">first_line</span> <span class="ruby-operator">&lt;</span> <span class="ruby-value">0</span>
+      <span class="ruby-identifier">first_line</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">last_line</span> = <span class="ruby-ivar">@line_number</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">proximity</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">last_line</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-ivar">@code</span>.<span class="ruby-identifier">length</span>
+      <span class="ruby-identifier">last_line</span> = <span class="ruby-ivar">@code</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>
+    <span class="ruby-keyword kw">end</span>
+    
+    <span class="ruby-identifier">space</span> = <span class="ruby-identifier">last_line</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">length</span>
+    <span class="ruby-identifier">result</span> = <span class="ruby-value str">&quot;&quot;</span>
+    <span class="ruby-identifier">first_line</span>.<span class="ruby-identifier">upto</span>(<span class="ruby-identifier">last_line</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">result</span> <span class="ruby-operator">+=</span> <span class="ruby-node">&quot;#{(i+1) == @line_number ? &quot;*&quot; : &quot; &quot;}#{(i+1).to_s.rjust(space)} #{@code[i]}&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+    <span class="ruby-identifier">result</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="method">
+  <div class="title">
+    <a name="M000034"></a><b>to_s</b>()
+  </div>
+  <div class="description">
+  <p>
+Detailed information
+</p>
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000034_source')" id="l_M000034_source">show source</a> ]</p>
+  <div id="M000034_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/evaluator_error.rb, line 26</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">to_s</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@information</span>
+      <span class="ruby-node">&quot;Runtime Error [#{@phase}] at [#{@node}:#{@line_number}]\n#{problem_code_with_number}&quot;</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-node">&quot;Runtime Error [#{@phase}] at [#{@node}]&quot;</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+<div class="sectiontitle">Protected Instance methods</div>
+<div class="method">
+  <div class="title">
+    <a name="M000036"></a><b>process_error</b>()
+  </div>
+<div class="sourcecode">
+  <p class="source-link">[ <a href="javascript:toggleSource('M000036_source')" id="l_M000036_source">show source</a> ]</p>
+  <div id="M000036_source" class="dyn-source">
+<pre>
+<span class="ruby-comment cmt"># File lib-ruby/parser/evaluator_error.rb, line 54</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">process_error</span>
+    <span class="ruby-identifier">match_data</span> = <span class="ruby-regexp re">/\(eval\)\:(\d+)\:(.*)/</span>.<span class="ruby-identifier">match</span>(<span class="ruby-ivar">@backtrace</span>)
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">match_data</span>
+      <span class="ruby-ivar">@information</span> = <span class="ruby-keyword kw">true</span>
+      <span class="ruby-ivar">@line_number</span> = <span class="ruby-identifier">match_data</span>[<span class="ruby-value">1</span>].<span class="ruby-identifier">to_i</span>
+    <span class="ruby-keyword kw">else</span>
+      <span class="ruby-ivar">@information</span> = <span class="ruby-keyword kw">false</span>
+    <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span>
+</pre>
+  </div>
+</div>
+</div>
+</div>
+
+  </div>
+
+    </body>
+</html>
